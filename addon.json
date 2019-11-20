@@ -1,0 +1,28 @@
+{
+    "legacy_addon_id": "GeoIP",
+    "title": "Geoblock Registrations",
+    "description": "Registration Geoblocking using Maxmind's GeoLite2 Database",
+    "version_id": 1000010,
+    "version_string": "1.0.0 Alpha",
+    "dev": "Simon Hampel",
+    "dev_url": "https://bitbucket.org/hampel/",
+    "faq_url": "",
+    "support_url": "",
+    "extra_urls": {
+        "Git Repository": "https://bitbucket.org/hampel/geoblock-xenforo",
+        "Twitter": "https://twitter.com/SimonHampel",
+        "Maxmind": "https://dev.maxmind.com/geoip/geoip2/geolite2/"
+    },
+    "require": {
+        "php": [
+            "5.6.0",
+            "PHP 5.6+"
+        ],
+        "XF": [
+            "2010070",
+            "XenForo 2.1.0+"
+        ]
+    },
+    "composer_autoload": "vendor/composer",
+    "icon": "fa-globe"
+}
