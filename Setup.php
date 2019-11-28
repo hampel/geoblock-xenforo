@@ -1,6 +1,7 @@
 <?php namespace Hampel\Geoblock;
 
 use XF\AddOn\AbstractSetup;
+use XF\Db\Schema\Create;
 
 class Setup extends AbstractSetup
 {
