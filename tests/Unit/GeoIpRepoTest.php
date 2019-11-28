@@ -135,7 +135,11 @@ class GeoIpRepoTest extends TestCase
 
 		$data = $ipgeo->toArray();
 
-		// can't properly mock an entity which uses save()
+		/*
+		 * can't properly mock an entity which uses save()
+		 *
+		 * ... but that's okay - we'll use a fake mock class rather than inherit from the base class (2nd parameter)
+		 */
 		$entity = $this->mockEntity('Hampel\Geoblock:GeoIp', false, function ($mock) use ($data) {
 			$mock->expects()->bulkset($data)->once();
 			$mock->expects()->save()->once();
@@ -156,7 +160,11 @@ class GeoIpRepoTest extends TestCase
 
 		$data = $ipgeo->toArray();
 
-		// can't properly mock an entity which uses save()
+		/*
+		 * can't properly mock an entity which uses save()
+		 *
+		 * ... but that's okay - we'll use a fake mock class rather than inherit from the base class (2nd parameter)
+		 */
 		$entity = $this->mockEntity('Hampel\Geoblock:GeoIp', false, function ($mock) use ($data) {
 			$mock->expects()->bulkset($data)->once();
 			$mock->expects()->save()->once();
