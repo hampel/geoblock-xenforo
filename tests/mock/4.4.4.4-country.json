@@ -1,0 +1,19 @@
+{
+    "registered_country": {
+        "iso_code": "RU",
+        "geoname_id": 2017370,
+        "names": {
+            "de": "Russland",
+            "en": "Russia",
+            "es": "Rusia",
+            "fr": "Russie",
+            "ja": "ロシア",
+            "pt-BR": "Rússia",
+            "ru": "Россия",
+            "zh-CN": "俄罗斯"
+        }
+    },
+    "traits": {
+        "ip_address": "4.4.4.4"
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "admin/geoblock_tools_test_geoblock.html": {
+        "version_id": 1000010,
+        "version_string": "1.0.0 Alpha",
+        "hash": "ca01477dd3883ba3444b838cb15ccbb4"
+    },
+    "admin/geoblock_tools_update_maxmind.html": {
+        "version_id": 1000010,
+        "version_string": "1.0.0 Alpha",
+        "hash": "320f9fa4793c020dea7e508f6d1f82a3"
+    }
+}

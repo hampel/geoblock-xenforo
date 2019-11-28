@@ -1,0 +1,7 @@
+Enable this option to have registrations from any countries not in the approved or denied list automatically placed in moderation.<br />
+<br />
+Disabling this option effectively approves registrations from any country NOT in the denied list and makes the Approved list redundant.<br />
+<br />
+If <em>Reject registrations from denied countries</em> is unchecked, but <em>Moderate non-listed countries</em> is checked, the Denied list becomes redundant because registrations from any country not in the Approved list will automatically be placed in moderation.<br />
+<br />
+Do not enable <em>Moderate non-listed countries</em> unless you are using at least one of the Approved or Denied lists - otherwise you effectively just place every registration in moderation - which you can do with a single XenForo setting with vastly improved performance!

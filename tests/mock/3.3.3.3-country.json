@@ -1,0 +1,19 @@
+{
+    "continent": {
+        "code": "AS",
+        "geoname_id": 6255147,
+        "names": {
+            "zh-CN": "亚洲",
+            "de": "Asien",
+            "en": "Asia",
+            "es": "Asia",
+            "fr": "Asie",
+            "ja": "アジア",
+            "pt-BR": "Ásia",
+            "ru": "Азия"
+        }
+    },
+    "traits": {
+        "ip_address": "3.3.3.3"
+    }
+}

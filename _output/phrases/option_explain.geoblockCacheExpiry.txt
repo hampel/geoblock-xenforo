@@ -1,0 +1,1 @@
+How long (in days) to cache the IP Geo data in the database.

@@ -1,0 +1,3 @@
+Enable this option to turn on test mode - API calls are bypassed and instead the api will return a fixed IP address for testing purposes with attributes as selected. This is ideal for testing on a local development machine where the IP address is private and the API calls always return an unusable ISO Code.<br />
+<br />The IP address returned is always "10.0.0.1" and the ISO Code is always "XX".<br />
+<br /><b>Usage:</b> Turn on test mode, place the "XX" ISO Code in the Approved or Denied country codes lists and then register a new user account to see what effect the settings will have on registration.

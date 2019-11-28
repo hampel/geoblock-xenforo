@@ -4,7 +4,8 @@
 		"geoip2/geoip2": "~2.0"
 	},
 	"require-dev": {
-		"hampel/xenforo-test-framework": "^1.0"
+		"hampel/xenforo-test-framework": "dev-develop",
+		"league/flysystem-memory": "^1.0"
 	},
     "autoload-dev": {
         "psr-4": {

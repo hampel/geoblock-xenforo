@@ -1,0 +1,1 @@
+Check this box to have registrations from denied countries rejected. Uncheck it to place them into moderation instead.

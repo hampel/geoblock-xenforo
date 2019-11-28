@@ -1,0 +1,47 @@
+{
+    "continent": {
+        "code": "OC",
+        "geoname_id": 6255151,
+        "names": {
+            "es": "Oceanía",
+            "fr": "Océanie",
+            "ja": "オセアニア",
+            "pt-BR": "Oceania",
+            "ru": "Океания",
+            "zh-CN": "大洋洲",
+            "de": "Ozeanien",
+            "en": "Oceania"
+        }
+    },
+    "country": {
+        "iso_code": "AU",
+        "geoname_id": 2077456,
+        "names": {
+            "en": "Australia",
+            "es": "Australia",
+            "fr": "Australie",
+            "ja": "オーストラリア",
+            "pt-BR": "Austrália",
+            "ru": "Австралия",
+            "zh-CN": "澳大利亚",
+            "de": "Australien"
+        }
+    },
+    "registered_country": {
+        "iso_code": "AU",
+        "geoname_id": 2077456,
+        "names": {
+            "en": "Australia",
+            "es": "Australia",
+            "fr": "Australie",
+            "ja": "オーストラリア",
+            "pt-BR": "Austrália",
+            "ru": "Австралия",
+            "zh-CN": "澳大利亚",
+            "de": "Australien"
+        }
+    },
+    "traits": {
+        "ip_address": "1.1.1.1"
+    }
+}

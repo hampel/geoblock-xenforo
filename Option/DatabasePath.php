@@ -1,0 +1,43 @@
+<?php namespace Hampel\Geoblock\Option;
+
+use XF\Option\AbstractOption;
+use XF\Util\File;
+
+class DatabasePath extends AbstractOption
+{
+	public static function get()
+	{
+		return \XF::options()->geoblockDatabasePath;
+	}
+
+	public static function getCanonicalPath()
+	{
+		$path = self::get();
+		if (empty($path)) return;
+
+		return File::canonicalizePath(sprintf("%s/%s", \XF::config('internalDataPath'), $path));
+	}
+
+	public static function getAbstractedPath()
+	{
+		$path = self::get();
+		if (empty($path)) return;
+
+		return sprintf("internal-data://%s", $path);
+	}
+
+//	public static function getFullPath()
+//	{
+//		$path = self::get();
+//		if (empty($path)) return;
+//
+//		if (substr($path, 0, 1) == '/')
+//		{
+//			// already absolute path, just return it
+//			return $path;
+//		}
+//
+//		// relative to internal_data
+//		return "internal-data://{$path}";
+//	}
+}

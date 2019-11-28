@@ -1,0 +1,1 @@
+Allowed. Code appeared on an explicit approved list, so the user registration will be allowed.
