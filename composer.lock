@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f381b75df5e86523cbd4580d9c5c10b2",
+    "content-hash": "2cd6d02a445a3a47fd4cfe7134735ab4",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -325,16 +325,16 @@
         },
         {
             "name": "hampel/xenforo-test-framework",
-            "version": "dev-develop",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://bitbucket.org/hampel/xenforo-test-framework.git",
-                "reference": "287c7607cf60bf0734593dac9ad184e7824a5a1a"
+                "reference": "730569252ee2b1cb77bb286684083cc27620215b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://bitbucket.org/hampel/xenforo-test-framework/get/287c7607cf60bf0734593dac9ad184e7824a5a1a.zip",
-                "reference": "287c7607cf60bf0734593dac9ad184e7824a5a1a",
+                "url": "https://bitbucket.org/hampel/xenforo-test-framework/get/730569252ee2b1cb77bb286684083cc27620215b.zip",
+                "reference": "730569252ee2b1cb77bb286684083cc27620215b",
                 "shasum": ""
             },
             "require": {
@@ -371,7 +371,7 @@
                 "unit testing",
                 "xenforo"
             ],
-            "time": "2019-11-26T02:20:04+00:00"
+            "time": "2019-11-28T04:45:36+00:00"
         },
         {
             "name": "league/flysystem",
@@ -1889,16 +1889,16 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.12.0",
+            "version": "v1.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "550ebaac289296ce228a706d0867afc34687e3f4"
+                "reference": "f8f0b461be3385e56d6de3dbb5a0df24c0c275e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/550ebaac289296ce228a706d0867afc34687e3f4",
-                "reference": "550ebaac289296ce228a706d0867afc34687e3f4",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/f8f0b461be3385e56d6de3dbb5a0df24c0c275e3",
+                "reference": "f8f0b461be3385e56d6de3dbb5a0df24c0c275e3",
                 "shasum": ""
             },
             "require": {
@@ -1910,7 +1910,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.12-dev"
+                    "dev-master": "1.13-dev"
                 }
             },
             "autoload": {
@@ -1943,7 +1943,7 @@
                 "polyfill",
                 "portable"
             ],
-            "time": "2019-08-06T08:03:45+00:00"
+            "time": "2019-11-27T13:56:44+00:00"
         },
         {
             "name": "theseer/tokenizer",
@@ -2036,9 +2036,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "hampel/xenforo-test-framework": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
