@@ -2,8 +2,8 @@
     "legacy_addon_id": "GeoIP",
     "title": "Geoblock Registrations",
     "description": "Registration Geoblocking using Maxmind's GeoLite2 Database",
-    "version_id": 1000010,
-    "version_string": "1.0.0 Alpha",
+    "version_id": 1000030,
+    "version_string": "1.0.0 Beta",
     "dev": "Simon Hampel",
     "dev_url": "https://bitbucket.org/hampel/",
     "faq_url": "",
@@ -23,6 +23,6 @@
             "XenForo 2.1.0+"
         ]
     },
-    "composer_autoload": "vendor/composer",
-    "icon": "fa-globe"
+    "icon": "fa-globe",
+    "composer_autoload": "vendor/composer"
 }
