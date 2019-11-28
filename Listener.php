@@ -39,7 +39,7 @@ class Listener
 
 		if ($api->isConfigured())
 		{
-			$providers[] = 'Hampel\Geoblock:GeoIp';
+			$providers[] = 'Hampel\Geoblock:Geoblock';
 		}
 	}
 }
