@@ -1,1 +1,0 @@
-List of 2-character ISO codes for countries which are automatically approved (subject to other anti-spam checks the system might make). Separate multiple entries with commas, spaces or new lines.

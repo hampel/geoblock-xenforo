@@ -1,1 +1,0 @@
-Moderated (explicit). Code appeared on an explicit denied list and "Denied Action" is set to "Registration Moderated", so the user registration will be placed in moderation.

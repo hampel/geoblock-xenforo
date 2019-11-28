@@ -1,1 +1,0 @@
-GeoIP lookup using Maxmind GeoLite2 database

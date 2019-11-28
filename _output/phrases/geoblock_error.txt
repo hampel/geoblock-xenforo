@@ -1,1 +1,0 @@
-Maxmind database lookup returned code {code} for IP request [{ip}] with message: {message}

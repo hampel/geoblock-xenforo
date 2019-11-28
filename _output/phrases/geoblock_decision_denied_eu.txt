@@ -1,1 +1,0 @@
-Rejected (EU). Code does not appear on any explicit approved or deny lists, but is indicated to be in the European Union and "Reject EU Registrations" is enabled, so the user registration will be rejected.

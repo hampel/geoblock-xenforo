@@ -1,3 +1,0 @@
-Simulate this country being in the European Union to determine what would happen to registration based on the "Reject EU Registrations" setting.<br />
-<br />Does not perform any database lookups, nor does it validate whether this country is actually in the EU - used for testing configuration only.<br />
-<br />Ignored if "Reject EU Registrations" option is not enabled.

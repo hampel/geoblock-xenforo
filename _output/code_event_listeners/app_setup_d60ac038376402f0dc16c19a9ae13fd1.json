@@ -1,9 +1,0 @@
-{
-    "event_id": "app_setup",
-    "execute_order": 10,
-    "callback_class": "Hampel\\Geoblock\\Listener",
-    "callback_method": "appSetup",
-    "active": true,
-    "hint": "",
-    "description": "Set up Maxmind API"
-}

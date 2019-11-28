@@ -1,1 +1,0 @@
-Rejected (explicit). Code appeared on an explicit denied list and "Denied Action" is set to "Registration Denied", so the user registration will be rejected.
