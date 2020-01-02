@@ -52,17 +52,17 @@
   <phrase title="option.geoblockApproved" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[Approved country codes]]></phrase>
   <phrase title="option.geoblockCacheExpiry" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[Cache expiry]]></phrase>
   <phrase title="option.geoblockDatabasePath" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[Local Database Path]]></phrase>
-  <phrase title="option.geoblockDatabaseUrl" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[Database URL]]></phrase>
   <phrase title="option.geoblockDenied" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[Denied country codes]]></phrase>
+  <phrase title="option.geoblockLicenseKey" version_id="1000070" version_string="1.0.0"><![CDATA[License Key]]></phrase>
   <phrase title="option.geoblockModerateOthers" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[Moderate non-listed countries]]></phrase>
   <phrase title="option.geoblockRejectDenied" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[Reject registrations from denied countries]]></phrase>
   <phrase title="option.geoblockRejectEu" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[Reject EU registrations]]></phrase>
   <phrase title="option.geoblockTestMode" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[Test Mode]]></phrase>
   <phrase title="option_explain.geoblockApproved" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[List of 2-character ISO codes for countries which are automatically approved (subject to other anti-spam checks the system might make). Separate multiple entries with commas, spaces or new lines.]]></phrase>
   <phrase title="option_explain.geoblockCacheExpiry" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[How long (in days) to cache the IP Geo data in the database.]]></phrase>
-  <phrase title="option_explain.geoblockDatabasePath" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[Path to where we will store the Maxmind GeoLite2 database, relative to the internal_data directory.]]></phrase>
-  <phrase title="option_explain.geoblockDatabaseUrl" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[Full URL to database download source. You shouldn't need to change this unless Maxmind changes the URL.]]></phrase>
+  <phrase title="option_explain.geoblockDatabasePath" version_id="1000070" version_string="1.0.0"><![CDATA[Path to where we will store the Maxmind GeoLite2 database, relative to the internal_data directory. There is generally no need to change this.]]></phrase>
   <phrase title="option_explain.geoblockDenied" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[List of 2-character ISO codes for countries which are denied automatic registration approval. The action taken (denied or moderated) depends on the setting below. Separate multiple entries with commas, spaces or new lines.]]></phrase>
+  <phrase title="option_explain.geoblockLicenseKey" version_id="1000070" version_string="1.0.0"><![CDATA[Your MaxMind License Key for downloading GeoIP2 Lite database data]]></phrase>
   <phrase title="option_explain.geoblockModerateOthers" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[Enable this option to have registrations from any countries not in the approved or denied list automatically placed in moderation.<br />
 <br />
 Disabling this option effectively approves registrations from any country NOT in the denied list and makes the Approved list redundant.<br />

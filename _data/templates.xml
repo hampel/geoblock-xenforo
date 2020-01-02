@@ -53,11 +53,11 @@
 	</div>
 	<xf:hiddenval name="test">Hampel\Geoblock:IsoDeciderTest</xf:hiddenval>
 </xf:form>]]></template>
-  <template type="admin" title="geoblock_tools_update_maxmind" version_id="1000010" version_string="1.0.0 Alpha"><![CDATA[<xf:title>{{ phrase('geoblock_update_maxmind_database') }}</xf:title>
+  <template type="admin" title="geoblock_tools_update_maxmind" version_id="1000070" version_string="1.0.0"><![CDATA[<xf:title>{{ phrase('geoblock_update_maxmind_database') }}</xf:title>
 
 <xf:if is="$messages">
 	<xf:foreach loop="$messages" value="$message">
-		<div class="blockMessage blockMessage--{$message.type}">{{ $message.message }}</div>
+		<div class="blockMessage blockMessage--error">{{ $message }}</div>
 	</xf:foreach>
 </xf:if>
 

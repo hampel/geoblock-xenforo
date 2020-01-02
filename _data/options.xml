@@ -14,14 +14,14 @@
     <default_value>maxmind/GeoLite2-Country.mmdb</default_value>
     <relation group_id="geoblock" display_order="21"/>
   </option>
-  <option option_id="geoblockDatabaseUrl" edit_format="textbox" data_type="string" validation_class="Hampel\Geoblock\Option\DatabaseUrl" validation_method="verifyOption">
-    <default_value>https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz</default_value>
-    <relation group_id="geoblock" display_order="20"/>
-  </option>
   <option option_id="geoblockDenied" edit_format="textbox" data_type="string" validation_class="Hampel\Geoblock\Option\Denied" validation_method="verifyOption">
     <default_value></default_value>
     <edit_format_params>rows=3</edit_format_params>
     <relation group_id="geoblock" display_order="110"/>
+  </option>
+  <option option_id="geoblockLicenseKey" edit_format="textbox" data_type="string">
+    <default_value></default_value>
+    <relation group_id="geoblock" display_order="1"/>
   </option>
   <option option_id="geoblockModerateOthers" edit_format="onoff" data_type="boolean">
     <default_value>0</default_value>
