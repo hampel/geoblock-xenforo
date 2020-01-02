@@ -8,11 +8,11 @@
     "geoblockDatabasePath.json": {
         "hash": "806b90df30ee1b8dd309bb5d519f38c7"
     },
-    "geoblockDatabaseUrl.json": {
-        "hash": "b231af370cc3f704b5770fa568f90355"
-    },
     "geoblockDenied.json": {
         "hash": "94a233323e9ed470c9fdd70d8e456939"
+    },
+    "geoblockLicenseKey.json": {
+        "hash": "4879aaa1a25ca702a0f3ac84610183c2"
     },
     "geoblockModerateOthers.json": {
         "hash": "652ee13e0e752943b239670164def054"

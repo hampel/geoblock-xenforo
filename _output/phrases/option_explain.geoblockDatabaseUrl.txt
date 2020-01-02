@@ -1,1 +1,0 @@
-Full URL to database download source. You shouldn't need to change this unless Maxmind changes the URL.

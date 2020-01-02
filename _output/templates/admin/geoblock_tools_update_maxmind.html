@@ -2,7 +2,7 @@
 
 <xf:if is="$messages">
 	<xf:foreach loop="$messages" value="$message">
-		<div class="blockMessage blockMessage--{$message.type}">{{ $message.message }}</div>
+		<div class="blockMessage blockMessage--error">{{ $message }}</div>
 	</xf:foreach>
 </xf:if>
 

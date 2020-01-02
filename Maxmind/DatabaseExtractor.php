@@ -3,6 +3,7 @@
 use XF\App;
 use XF\Util\File;
 
+
 class DatabaseExtractor
 {
 	// TODO: unit tests for this class
@@ -10,12 +11,61 @@ class DatabaseExtractor
 	/** @var App */
 	protected $app;
 
+	protected $urlPrefix = "https://download.maxmind.com/app/geoip_download";
+
+	protected $edition = "GeoLite2-Country";
+
+	protected $suffix = "tar.gz";
+
 	public function __construct(App $app)
 	{
 		$this->app = $app;
 	}
 
-	public function downloadDatabase($source, $dest)
+	public function setPrefix($prefix)
+	{
+		$this->urlPrefix = $prefix;
+	}
+
+	public function setEdition($edition)
+	{
+		$this->edition = $edition;
+	}
+
+	public function setSuffix($suffix)
+	{
+		$this->suffix = $suffix;
+	}
+
+	public function updateDatabase($licenseKey, $destPath)
+	{
+		$downloadUrl = $this->buildDownloadUrl($licenseKey);
+
+		$compressedDatabaseFile = $this->getTempFile();
+
+		if (!$this->downloadDatabase($downloadUrl, $compressedDatabaseFile))
+		{
+			return false;
+		}
+
+		$extractedDatabasePath = $this->getTempDest();
+
+		if (!$this->extractDatabase($compressedDatabaseFile, $extractedDatabasePath))
+		{
+			return false;
+		}
+
+		$abstractedDatabasePath = $this->getAbstractedTempDest();
+
+		if (!$this->moveDatabase($abstractedDatabasePath, $destPath))
+		{
+			return false;
+		}
+
+		return $this->cleanupDatabase($abstractedDatabasePath);
+	}
+
+	protected function downloadDatabase($source, $dest)
 	{
 		if(!$this->app->http()->reader()->getUntrusted($source, [], $dest, [], $error))
 		{
@@ -26,7 +76,12 @@ class DatabaseExtractor
 		return true;
 	}
 
-	public function extractDatabase($source, $dest)
+	protected function buildDownloadUrl($licenseKey, $prefix = "https://download.maxmind.com/app/geoip_download", $edition = "GeoLite2-Country", $suffix = "tar.gz")
+	{
+		return sprintf("%s?edition_id=%s&license_key=%s&suffix=%s", $prefix, $edition, $licenseKey, $suffix);
+	}
+
+	protected function extractDatabase($source, $dest)
 	{
 		stream_wrapper_restore('phar');
 
@@ -55,7 +110,7 @@ class DatabaseExtractor
 		return true;
 	}
 
-	public function moveDatabase($source, $dest)
+	protected function moveDatabase($source, $dest)
 	{
 		$fs = $this->app->fs();
 
@@ -77,32 +132,34 @@ class DatabaseExtractor
 		return false;
 	}
 
-	public function cleanupDatabase($dir)
+	protected function cleanupDatabase($dir)
 	{
 		return $this->app->fs()->deleteDir($dir);
 	}
 
-	public function getTempFile($filename)
+	protected function getTempFile()
 	{
+		$filename = sprintf("%s.%s", $this->edition, $this->suffix);
+
 		return File::getNamedTempFile($filename);
 	}
 
-	public function getTempDest()
+	protected function getTempDest()
 	{
 		return sprintf("%s/maxmind", File::getTempDir());
 	}
 
-	public function getAbstractedTempPath()
+	protected function getAbstractedTempPath()
 	{
 		return sprintf($this->app->config('tempDataPath'), 'internal-data://');
 	}
 
-	public function getAbstractedTempDest()
+	protected function getAbstractedTempDest()
 	{
 		return sprintf("%s/maxmind", $this->getAbstractedTempPath());
 	}
 
-	public function recurseArchive($archive, $path = '')
+	protected function recurseArchive($archive, $path = '')
 	{
 		foreach ($archive as $contents)
 		{

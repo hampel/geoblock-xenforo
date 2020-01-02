@@ -293,17 +293,17 @@
         "version_string": "1.0.0 Alpha",
         "hash": "7d77483659a9fe6aecd031321710eadd"
     },
-    "option.geoblockDatabaseUrl.txt": {
-        "global_cache": false,
-        "version_id": 1000010,
-        "version_string": "1.0.0 Alpha",
-        "hash": "c3c6f7772fc7896022b0cacfc508de95"
-    },
     "option.geoblockDenied.txt": {
         "global_cache": false,
         "version_id": 1000010,
         "version_string": "1.0.0 Alpha",
         "hash": "8f6b414fe18d1811b07be81e72eb7b2c"
+    },
+    "option.geoblockLicenseKey.txt": {
+        "global_cache": false,
+        "version_id": 1000070,
+        "version_string": "1.0.0",
+        "hash": "5d5c4ad5db4bd841e161e43ac45bc5c6"
     },
     "option.geoblockModerateOthers.txt": {
         "global_cache": false,
@@ -343,21 +343,21 @@
     },
     "option_explain.geoblockDatabasePath.txt": {
         "global_cache": false,
-        "version_id": 1000010,
-        "version_string": "1.0.0 Alpha",
-        "hash": "b925f1f7dd5b1db531ef3e833094697d"
-    },
-    "option_explain.geoblockDatabaseUrl.txt": {
-        "global_cache": false,
-        "version_id": 1000010,
-        "version_string": "1.0.0 Alpha",
-        "hash": "f718154d7e0655e9220cd94135c2b942"
+        "version_id": 1000070,
+        "version_string": "1.0.0",
+        "hash": "3d29a5c52b02527913b60a7f41334eba"
     },
     "option_explain.geoblockDenied.txt": {
         "global_cache": false,
         "version_id": 1000010,
         "version_string": "1.0.0 Alpha",
         "hash": "b2714259eef133e3f9f05be5950154c8"
+    },
+    "option_explain.geoblockLicenseKey.txt": {
+        "global_cache": false,
+        "version_id": 1000070,
+        "version_string": "1.0.0",
+        "hash": "45032e2e6d2af04ac3f619ade843cb70"
     },
     "option_explain.geoblockModerateOthers.txt": {
         "global_cache": false,
