@@ -5,8 +5,8 @@ use GeoIp2\Exception\GeoIp2Exception;
 use Hampel\Geoblock\IpGeo;
 use Hampel\Geoblock\Maxmind\DatabaseExtractor;
 use Hampel\Geoblock\Option\DatabasePath;
-use Hampel\Geoblock\Option\DatabaseUrl;
 use Hampel\Geoblock\Option\TestMode;
+use Hampel\Geoblock\Option\LicenseKey;
 use MaxMind\Db\Reader\InvalidDatabaseException;
 use XF\Container;
 use XF\SubContainer\AbstractSubContainer;
@@ -30,8 +30,8 @@ class Maxmind extends AbstractSubContainer
 
 	public function isConfigured()
 	{
-		return !empty(DatabasePath::get())
-			&& !empty(DatabaseUrl::get())
+		return !empty(LicenseKey::get())
+			&& !empty(DatabasePath::get())
 			&& $this->app->fs()->has(DatabasePath::getAbstractedPath());
 	}
 
@@ -123,50 +123,29 @@ class Maxmind extends AbstractSubContainer
 		return $this->app->repository('Hampel\Geoblock:GeoIp');
 	}
 
-	protected function logException(\Exception $e, $ip = '')
+	protected function logError(\Exception $e, $ip = '')
 	{
 		\XF::logError(\XF::phrase('geoblock_error', ['ip' => $ip, 'code' => $e->getCode(), 'message' => $e->getMessage()]));
 	}
 
 	public function updateDatabase()
 	{
-		$dbUrl = DatabaseUrl::get();
-		if (empty($dbUrl))
+		$licenseKey = LicenseKey::get();
+		if (empty($licenseKey))
 		{
-			$this->logError("Geoblock database URL not configured");
+			\XF::logError("Maxmind license key not configured");
 			return false;
 		}
 
 		$dbPath = DatabasePath::getAbstractedPath();
 		if (empty($dbPath))
 		{
-			$this->logError("Geoblock database path not configured");
+			\XF::logError("Maxmind database path not configured");
 			return false;
 		}
 
 		$extractor = $this->databaseExtractor();
 
-		$compressedDatabaseFile = $extractor->getTempFile(DatabaseUrl::getUrlBasename());
-
-		if (!$extractor->downloadDatabase($dbUrl, $compressedDatabaseFile))
-		{
-			return false;
-		}
-
-		$extractedDatabasePath = $extractor->getTempDest();
-
-		if (!$extractor->extractDatabase($compressedDatabaseFile, $extractedDatabasePath))
-		{
-			return false;
-		}
-
-		$abstractedDatabasePath = $extractor->getAbstractedTempDest();
-
-		if (!$extractor->moveDatabase($abstractedDatabasePath, $dbPath))
-		{
-			return false;
-		}
-
-		return $extractor->cleanupDatabase($abstractedDatabasePath);
+		return $extractor->updateDatabase($licenseKey, $dbPath);
 	}
 }
