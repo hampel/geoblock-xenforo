@@ -8,7 +8,7 @@ This product includes GeoLite2 data created by MaxMind, available from
 
 Minimum of PHP 5.6 required.
 
-More information here: [Geoblock Registrations](https://xenforo.com/community/resources/.....)
+More information here: [Geoblock Registrations](https://xenforo.com/community/resources/geoblock-registration.7516/)
 (XenForo Addon Resource)
 
 By [Simon Hampel](https://twitter.com/SimonHampel).
