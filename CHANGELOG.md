@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.1.1 (2020-01-02)
+------------------
+
+ * bugfix - was using hard coded URL components rather than class properties
+
 1.1.0 (2020-01-02)
 ------------------
 
