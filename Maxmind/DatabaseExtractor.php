@@ -37,6 +37,14 @@ class DatabaseExtractor
 		$this->suffix = $suffix;
 	}
 
+	/**
+	 * Update the database on the filesystem with a new download from Maxmind
+	 *
+	 * @param $licenseKey the Maxmind lixense key for the user
+	 * @param $destPath the path relative to the internal_data directory where we will store the mmdb file
+	 *
+	 * @return bool
+	 */
 	public function updateDatabase($licenseKey, $destPath)
 	{
 		$downloadUrl = $this->buildDownloadUrl($licenseKey);
@@ -76,9 +84,9 @@ class DatabaseExtractor
 		return true;
 	}
 
-	protected function buildDownloadUrl($licenseKey, $prefix = "https://download.maxmind.com/app/geoip_download", $edition = "GeoLite2-Country", $suffix = "tar.gz")
+	protected function buildDownloadUrl($licenseKey)
 	{
-		return sprintf("%s?edition_id=%s&license_key=%s&suffix=%s", $prefix, $edition, $licenseKey, $suffix);
+		return sprintf("%s?edition_id=%s&license_key=%s&suffix=%s", $this->urlPrefix, $this->edition, $licenseKey, $this->suffix);
 	}
 
 	protected function extractDatabase($source, $dest)
