@@ -1,12 +1,12 @@
 {
-    "admin/geoblock_tools_test_geoblock.html": {
-        "version_id": 1000010,
-        "version_string": "1.0.0 Alpha",
-        "hash": "ca01477dd3883ba3444b838cb15ccbb4"
+    "admin/hampel_geoblock_tools_test.html": {
+        "version_id": 1010170,
+        "version_string": "1.1.1",
+        "hash": "7c31d84949c3dbe6d67347533124f37f"
     },
-    "admin/geoblock_tools_update_maxmind.html": {
-        "version_id": 1000070,
-        "version_string": "1.0.0",
-        "hash": "532427467e38267dc31f068ddce0017c"
+    "admin/hampel_geoblock_tools_update_maxmind.html": {
+        "version_id": 1010170,
+        "version_string": "1.1.1",
+        "hash": "6c1ffed96445dcdd945dee0699b0df09"
     }
 }

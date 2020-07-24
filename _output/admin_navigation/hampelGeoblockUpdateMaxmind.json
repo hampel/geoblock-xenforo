@@ -1,7 +1,7 @@
 {
-    "parent_navigation_id": "checksAndTests",
+    "parent_navigation_id": "dataMaintenance",
     "display_order": 999,
-    "link": "tools/test-geoblock",
+    "link": "tools/hampel-geoblock-update-maxmind",
     "icon": "",
     "admin_permission_id": "option",
     "debug_only": false,

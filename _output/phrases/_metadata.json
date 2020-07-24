@@ -1,14 +1,14 @@
 {
-    "admin_navigation.testGeoblock.txt": {
+    "admin_navigation.hampelGeoblockTest.txt": {
         "global_cache": false,
-        "version_id": 1000010,
-        "version_string": "1.0.0 Alpha",
+        "version_id": 1010170,
+        "version_string": "1.1.1",
         "hash": "d521e6db84baba0248f0a34891339e67"
     },
-    "admin_navigation.updateMaxmindDatabase.txt": {
+    "admin_navigation.hampelGeoblockUpdateMaxmind.txt": {
         "global_cache": false,
-        "version_id": 1000010,
-        "version_string": "1.0.0 Alpha",
+        "version_id": 1010170,
+        "version_string": "1.1.1",
         "hash": "fe7b4be437121bcd3318722f15ba3742"
     },
     "cron_entry.geoblockDailyCleanup.txt": {

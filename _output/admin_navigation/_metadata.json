@@ -1,8 +1,8 @@
 {
-    "testGeoblock.json": {
-        "hash": "942e56ce8ca2ced76b4f98c5218558d4"
+    "hampelGeoblockTest.json": {
+        "hash": "6f34aee37e7542812a8d0361eaf6a515"
     },
-    "updateMaxmindDatabase.json": {
-        "hash": "a13aeaab4afe56efeab2efa135492461"
+    "hampelGeoblockUpdateMaxmind.json": {
+        "hash": "4bf0afaceacf4b2498a3b6463ce96897"
     }
 }

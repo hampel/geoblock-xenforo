@@ -6,9 +6,9 @@ use Hampel\Geoblock\Test\AbstractTest;
 
 class Tools extends XFCP_Tools
 {
-	public function actionUpdateMaxmind()
+	public function actionHampelGeoblockUpdateMaxmind()
 	{
-		$this->setSectionContext('updateMaxmind');
+		$this->setSectionContext('hampelGeoblockUpdateMaxmind');
 
 		$messages = [];
 		/** @var Maxmind $geoblock */
@@ -34,12 +34,12 @@ class Tools extends XFCP_Tools
 
 		$viewParams = compact('messages', 'description', 'build');
 
-		return $this->view('XF:Tools\UpdateMaxmind', 'geoblock_tools_update_maxmind', $viewParams);
+		return $this->view('Hampel\Geoblock:Tools\UpdateMaxmind', 'hampel_geoblock_tools_update_maxmind', $viewParams);
 	}
 
-	public function actionTestGeoblock()
+	public function actionHampelGeoblockTest()
 	{
-		$this->setSectionContext('testGeoblock');
+		$this->setSectionContext('hampelGeoblockTest');
 
 		$messages = [];
 		$results = false;
@@ -68,6 +68,6 @@ class Tools extends XFCP_Tools
 		}
 
 		$viewParams = compact('results', 'messages', 'test', 'options');
-		return $this->view('XF:Tools\TestGeoblock', 'geoblock_tools_test_geoblock', $viewParams);
+		return $this->view('Hampel\Geoblock:Tools\Test', 'hampel_geoblock_tools_test', $viewParams);
 	}
 }
