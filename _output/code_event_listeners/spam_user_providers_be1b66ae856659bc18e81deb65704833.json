@@ -1,0 +1,9 @@
+{
+    "event_id": "spam_user_providers",
+    "execute_order": 10,
+    "callback_class": "Hampel\\Geoblock\\Listener",
+    "callback_method": "spamUserProviders",
+    "active": true,
+    "hint": "",
+    "description": "Additional spam user provider for Geoblock"
+}

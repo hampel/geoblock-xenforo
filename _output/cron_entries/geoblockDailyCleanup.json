@@ -1,0 +1,17 @@
+{
+    "cron_class": "Hampel\\Geoblock\\Cron\\CleanUp",
+    "cron_method": "runDailyCleanup",
+    "run_rules": {
+        "day_type": "dom",
+        "dom": [
+            -1
+        ],
+        "hours": [
+            3
+        ],
+        "minutes": [
+            32
+        ]
+    },
+    "active": true
+}

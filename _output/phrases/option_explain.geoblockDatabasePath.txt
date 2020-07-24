@@ -1,0 +1,1 @@
+Path to where we will store the Maxmind GeoLite2 database, relative to the internal_data directory. There is generally no need to change this.

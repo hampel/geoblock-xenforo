@@ -1,0 +1,2 @@
+Enter a <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" target="_blank">2 character ISO country code</a> to test against your Geoblock registration rules.<br />
+<br />Does not query Maxmind database - simply matches text entered against configuration.

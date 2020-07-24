@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<cron>
-  <entry entry_id="geoblockDailyCleanup" cron_class="Hampel\Geoblock\Cron\CleanUp" cron_method="runDailyCleanup" active="1"><![CDATA[{"day_type":"dom","dom":[-1],"hours":[3],"minutes":[32]}]]></entry>
-  <entry entry_id="geoblockDownloadDatabase" cron_class="Hampel\Geoblock\Cron\UpdateDatabase" cron_method="runWeeklyDownload" active="1"><![CDATA[{"day_type":"dow","dow":[3],"hours":[12],"minutes":[30]}]]></entry>
-</cron>

@@ -1,0 +1,2 @@
+Enable this option to reject all registrations from countries identified as being in the EU. A message to this effect will be shown to the user.<br />
+<br />This setting will be over-ridden by approve and denied lists - for example, GB is currently "in" the EU until Brexit, so add "GB" to the Approved list above to bypass this EU rejection setting and allow registrations from the UK. A user from a country on the explicit denied list will receive the standard "spam like behaviour" rejection message even if the address is in the EU.

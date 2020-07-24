@@ -1,0 +1,1 @@
+By default, IP addresses lookups are cached in the database for performance reasons. Check this to bypass that and force use of the Maxmind database.

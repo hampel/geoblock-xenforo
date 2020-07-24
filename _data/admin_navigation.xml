@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<admin_navigation>
-  <admin_navigation_entry navigation_id="testGeoblock" parent_navigation_id="checksAndTests" display_order="999" link="tools/test-geoblock" admin_permission_id="option" debug_only="0" development_only="0" hide_no_children="0"/>
-  <admin_navigation_entry navigation_id="updateMaxmindDatabase" parent_navigation_id="dataMaintenance" display_order="999" link="tools/update-maxmind" admin_permission_id="option" debug_only="0" development_only="0" hide_no_children="0"/>
-</admin_navigation>

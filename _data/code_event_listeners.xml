@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<code_event_listeners>
-  <listener event_id="app_admin_setup" execute_order="10" callback_class="Hampel\Geoblock\Listener" callback_method="appAdminSetup" active="1" description="Set up Geoblock test factory for admin area"/>
-  <listener event_id="app_setup" execute_order="10" callback_class="Hampel\Geoblock\Listener" callback_method="appSetup" active="1" description="Set up Maxmind API"/>
-  <listener event_id="spam_user_providers" execute_order="10" callback_class="Hampel\Geoblock\Listener" callback_method="spamUserProviders" active="1" description="Additional spam user provider for Geoblock"/>
-</code_event_listeners>
