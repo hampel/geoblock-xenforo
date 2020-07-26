@@ -3,7 +3,6 @@
 use Hampel\Geoblock\IpGeo;
 use Hampel\Geoblock\Repository\GeoIp;
 use Tests\TestCase;
-use XF\Mvc\Entity\Manager;
 use XF\Util\Ip;
 
 class GeoIpRepoTest extends TestCase
