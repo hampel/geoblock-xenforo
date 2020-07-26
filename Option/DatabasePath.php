@@ -25,19 +25,4 @@ class DatabasePath extends AbstractOption
 
 		return sprintf("internal-data://%s", $path);
 	}
-
-//	public static function getFullPath()
-//	{
-//		$path = self::get();
-//		if (empty($path)) return;
-//
-//		if (substr($path, 0, 1) == '/')
-//		{
-//			// already absolute path, just return it
-//			return $path;
-//		}
-//
-//		// relative to internal_data
-//		return "internal-data://{$path}";
-//	}
 }
