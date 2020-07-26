@@ -17,9 +17,19 @@ class Maxmind extends AbstractSubContainer
 	{
 		$container = $this->container;
 
+		$container['database.canonical'] = function($c)
+		{
+			return DatabasePath::getCanonicalPath();
+		};
+
+		$container['database.abstracted'] = function($c)
+		{
+			return DatabasePath::getAbstractedPath();
+		};
+
 		$container['maxmind'] = function($c)
 		{
-			return new Reader(DatabasePath::getCanonicalPath());
+			return new Reader($this->databaseCanonical());
 		};
 
 		$container['extractor'] = function(Container $c)
@@ -32,7 +42,7 @@ class Maxmind extends AbstractSubContainer
 	{
 		return !empty(LicenseKey::get())
 			&& !empty(DatabasePath::get())
-			&& $this->app->fs()->has(DatabasePath::getAbstractedPath());
+			&& $this->app->fs()->has($this->databaseAbstracted());
 	}
 
 	/**
@@ -77,6 +87,16 @@ class Maxmind extends AbstractSubContainer
 		}
 	}
 
+	public function databaseCanonical()
+	{
+		return $this->container['database.canonical'];
+	}
+
+	public function databaseAbstracted()
+	{
+		return $this->container['database.abstracted'];
+	}
+
 	/**
 	 * @return Reader
 	 */
@@ -103,6 +123,7 @@ class Maxmind extends AbstractSubContainer
 		try
 		{
 			$data = $this->maxmind()->country($ip);
+
 			if (!empty($data)) return IpGeo::newFromModel($data);
 		}
 		catch (GeoIp2Exception $e)
