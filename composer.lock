@@ -352,16 +352,16 @@
         },
         {
             "name": "hampel/xenforo-test-framework",
-            "version": "1.2.0",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://bitbucket.org/hampel/xenforo-test-framework.git",
-                "reference": "3f0ef6a84aa3bf9befafb33336a9cdee3629fcb5"
+                "reference": "80615a634429cb72c35f51df0d0485d2e8482815"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://bitbucket.org/hampel/xenforo-test-framework/get/3f0ef6a84aa3bf9befafb33336a9cdee3629fcb5.zip",
-                "reference": "3f0ef6a84aa3bf9befafb33336a9cdee3629fcb5",
+                "url": "https://bitbucket.org/hampel/xenforo-test-framework/get/80615a634429cb72c35f51df0d0485d2e8482815.zip",
+                "reference": "80615a634429cb72c35f51df0d0485d2e8482815",
                 "shasum": ""
             },
             "require": {
@@ -398,7 +398,7 @@
                 "unit testing",
                 "xenforo"
             ],
-            "time": "2019-12-15T04:07:31+00:00"
+            "time": "2020-07-25T01:18:04+00:00"
         },
         {
             "name": "league/flysystem",
