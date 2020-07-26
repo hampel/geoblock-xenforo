@@ -2,10 +2,12 @@
 
 use GeoIp2\Database\Reader;
 use GeoIp2\Exception\GeoIp2Exception;
-use GeoIp2\Model\Country;
 use Hampel\Geoblock\IpGeo;
 use Hampel\Geoblock\SubContainer\Maxmind;
+use League\Flysystem\AdapterInterface;
+use League\Flysystem\EventableFilesystem\EventableFilesystem;
 use Tests\TestCase;
+use XF\FsMounts;
 
 class SubcontainerTest extends TestCase
 {
@@ -23,6 +25,8 @@ class SubcontainerTest extends TestCase
 
 	public function test_initialisation()
 	{
+		$this->mockMmdb();
+
 		$this->assertInstanceOf(Reader::class, $this->geoblock->maxmind());
 	}
 
@@ -35,6 +39,7 @@ class SubcontainerTest extends TestCase
 
 	public function test_configured_but_database_not_present()
 	{
+		// swap to a memory database which won't have anything in it
 		$this->swapFs('internal-data');
 
 		$this->setRequiredOptions('url_foo', 'path_foo');
@@ -44,9 +49,7 @@ class SubcontainerTest extends TestCase
 
 	public function test_configured_and_database_present()
 	{
-		$this->mockFs('internal-data', function ($mock) {
-			$mock->expects()->has('path_foo')->andReturns(true);
-		});
+		$this->mockMmdb();
 
 		$this->setRequiredOptions('url_foo', 'path_foo');
 
@@ -177,11 +180,9 @@ class SubcontainerTest extends TestCase
 		$this->setTestMode(false);
 		$this->setRequiredOptions('url_foo', 'path_foo');
 
-		$this->mockFs('internal-data', function ($mock) {
-			$mock->expects()->has('path_foo')->andReturns(true);
-		});
+		$this->mockMmdb();
 
-		$ip = '1.1.1.1';
+		$ip = '8.8.8.8';
 
 		$this->mockRepository('Hampel\Geoblock:GeoIp', function ($mock) use ($ip) {
 			$mock->expects()->checkPrivateOrReserved()->with($ip)->andReturn(null);
@@ -193,20 +194,13 @@ class SubcontainerTest extends TestCase
 			});
 		});
 
-		$raw = json_decode($this->getMockData('1.1.1.1-country.json'), true);
-		$country = new Country($raw);
-
-		$this->mock([$this->geoblock, 'maxmind'], Reader::class, function ($mock) use ($country, $ip) {
-			$mock->expects()->country($ip)->andReturn($country);
-		});
-
 		/** @var IpGeo $geo */
 		$geo = $this->geoblock->getIpGeo($ip, true);
 
 		$this->assertInstanceOf(IpGeo::class, $geo);
-		$this->assertEquals('1.1.1.1', $geo->getIp());
-		$this->assertEquals('AU', $geo->getIsoCode());
-		$this->assertEquals('Australia', $geo->getName());
+		$this->assertEquals('8.8.8.8', $geo->getIp());
+		$this->assertEquals('US', $geo->getIsoCode());
+		$this->assertEquals('United States', $geo->getName());
 		$this->assertFalse($geo->isInEu());
 	}
 
@@ -217,9 +211,7 @@ class SubcontainerTest extends TestCase
 		$this->setTestMode(false);
 		$this->setRequiredOptions('url_foo', 'path_foo');
 
-		$this->mockFs('internal-data', function ($mock) {
-			$mock->expects()->has('path_foo')->andReturns(true);
-		});
+		$this->mockMmdb();
 
 		$ip = '1.1.1.1';
 
@@ -227,12 +219,8 @@ class SubcontainerTest extends TestCase
 			$mock->expects()->checkPrivateOrReserved()->with($ip)->andReturn(null);
 		});
 
-		$this->mock([$this->geoblock, 'maxmind'], Reader::class, function ($mock) use ($ip) {
-			$mock->expects()->country($ip)->andThrow(new GeoIp2Exception('foo'));
-		});
-
 		/** @var IpGeo $geo */
-		$this->geoblock->getIpGeo($ip, true);
+		$this->assertNull($this->geoblock->getIpGeo($ip, true));
 
 		$this->assertExceptionLogged(GeoIp2Exception::class);
 	}
@@ -248,5 +236,27 @@ class SubcontainerTest extends TestCase
 	{
 		$this->setOption('geoblockDatabaseUrl', $url);
 		$this->setOption('geoblockDatabasePath', $path);
+	}
+
+	protected function mockMmdb()
+	{
+		$mockPath = __DIR__ . '/../mock';
+
+		$this->swap([$this->geoblock, 'database.canonical'], function ($c) use ($mockPath) {
+			return "{$mockPath}/country.mmdb";
+		});
+
+		$mockAdapter = FsMounts::getLocalAdapter($mockPath);
+		$mockFs = new EventableFilesystem($mockAdapter, ['visibility' => AdapterInterface::VISIBILITY_PUBLIC]);
+		$this->app()->fs()->mountFilesystem('mock', $mockFs);
+
+		$this->swap([$this->geoblock, 'database.abstracted'], function ($c) {
+			return "mock://country.mmdb";
+		});
+
+		$this->setOptions([
+			'geoblockLicenseKey' => 'key_foo',
+			'geoblockDatabasePath' => 'path_foo',
+		]);
 	}
 }
