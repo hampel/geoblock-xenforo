@@ -27,4 +27,13 @@ class Setup extends AbstractSetup
 	{
 		$this->schemaManager()->dropTable('xf_geoip_cache');
 	}
+
+	public function checkRequirements(&$errors = [], &$warnings = [])
+	{
+		$vendorDirectory = sprintf("%s/vendor", $this->addOn->getAddOnDirectory());
+		if (!file_exists($vendorDirectory))
+		{
+			$errors[] = "vendor folder does not exist - cannot proceed with addon install";
+		}
+	}
 }
