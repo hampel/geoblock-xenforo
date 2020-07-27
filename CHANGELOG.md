@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+1.1.2 (2020-07-27)
+------------------
+
+* check that vendor folder exists to prevent breaking forum if we somehow didn't run composer install
+* latest vendor dependencies
+* use mock mmdb database for unit testing testing
+* make subcontainer more testable by allowing paths to be replaced at runtime
+
 1.1.1 (2020-01-02)
 ------------------
 
