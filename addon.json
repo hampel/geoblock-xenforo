@@ -5,12 +5,12 @@
     "version_id": 1010270,
     "version_string": "1.1.2",
     "dev": "Simon Hampel",
-    "dev_url": "https://bitbucket.org/hampel/",
-    "faq_url": "",
-    "support_url": "",
+    "dev_url": "https://xenforo.com/community/members/sim.4264/",
+    "faq_url": "https://xenforo.com/community/resources/geoblock-registration.7516/field?field=faq",
+    "support_url": "https://xenforo.com/community/threads/geoblock-registration.172927/",
     "extra_urls": {
-        "Git Repository": "https://bitbucket.org/hampel/geoblock-xenforo",
-        "Twitter": "https://twitter.com/SimonHampel",
+        "Addon": "https://xenforo.com/community/resources/geoblock-registration.7516/",
+        "Git Repository": "https://github.com/hampel/geoblock-xenforo",
         "Maxmind": "https://dev.maxmind.com/geoip/geoip2/geolite2/"
     },
     "require": {

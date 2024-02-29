@@ -9,10 +9,10 @@ This product includes GeoLite2 data created by MaxMind, available from
 Note that as of 30th Dec 2019, a Maxmind account with a free License key is required to download IP database updates - 
 see [Significant Changes to Accessing and Using GeoLite2 Databases](https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases/) 
 
-More information about this addon can be found here: [Geoblock Registrations](https://xenforo.com/community/resources/geoblock-registration.7516/)
-(XenForo Addon Resource)
+* [Addon: Geoblock Registration](https://xenforo.com/community/resources/geoblock-registration.7516/)
+* [Discussion and support: Geoblock Registration](https://xenforo.com/community/threads/geoblock-registration.172927/)
 
-By [Simon Hampel](https://twitter.com/SimonHampel).
+By [Simon Hampel](https://xenforo.com/community/members/sim.4264/).
 
 ## Requirements
 
