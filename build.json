@@ -4,6 +4,7 @@
 		"composer install --no-dev --optimize-autoloader",
 		"rm -v _build/upload/src/addons/{addon_id}/phpunit.xml",
 		"rm -v -r _build/upload/src/addons/{addon_id}/tests",
+		"rm -v _build/upload/src/addons/{addon_id}/TESTING.md",
 		"mv -v _build/upload/src/addons/{addon_id}/*.md _build/"
 	]
 }
