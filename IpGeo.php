@@ -10,7 +10,7 @@ class IpGeo
 	public function __construct($ip, $iso_code, $name, $eu = false)
 	{
 		$this->ip = $ip;
-		$this->iso_code = strtoupper($iso_code);
+		$this->iso_code = $iso_code ? strtoupper($iso_code) : $iso_code;
 		$this->name = strval($name);
 		$this->eu = $eu;
 	}
