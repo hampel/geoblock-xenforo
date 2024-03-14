@@ -16,6 +16,8 @@ trait CreatesApplication
 
 		\XF::start($this->rootDir);
 
-		return \XF::setupApp('Hampel\Testing\App');
+        $options['xf-addons'] = $this->addonsToLoad ?: [];
+
+        return \XF::setupApp('Hampel\Testing\App', $options);
     }
 }

@@ -18,7 +18,7 @@ class SubcontainerTest extends TestCase
 	{
 		parent::setUp();
 
-		$this->geoblock = $this->app()->get('geoblock');
+		$this->geoblock = $this->app()->container('geoblock');
 	}
 
 	// ------------------------------------------------
