@@ -184,7 +184,7 @@ class GeoIpRepoTest extends TestCase
 		$this->mockDatabase(function ($mock) {
 			$cutoff = \XF::$time - 86400;
 
-			$mock->expects()->delete('xf_geoip_cache', 'lookup_date < ?', $cutoff);
+			$mock->expects()->delete('xf_geoblock_cache', 'lookup_date < ?', $cutoff);
 		});
 
 		$repo = $this->app()->repository('Hampel\Geoblock:GeoIp');

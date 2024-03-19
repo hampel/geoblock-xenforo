@@ -11,7 +11,7 @@ class Setup extends AbstractSetup
 
 	public function install(array $stepParams = [])
 	{
-		$this->schemaManager()->createTable('xf_geolite_cache', function(Create $table)
+		$this->schemaManager()->createTable('xf_geoblock_cache', function(Create $table)
 		{
 			$table->addColumn('ip', 'varbinary', 16);
 			$table->addColumn('iso_code', 'varchar', 2);
@@ -42,14 +42,15 @@ class Setup extends AbstractSetup
 
     public function upgrade1020070Step1()
     {
-        $this->schemaManager()->renameTable('xf_geoip_cache', 'xf_geolite_cache' );
+        // rename cache table so we have the addon id in the table name
+        $this->schemaManager()->renameTable('xf_geoip_cache', 'xf_geoblock_cache' );
     }
 
     // ################################ Uninstall ##################
 
 	public function uninstall(array $stepParams = [])
 	{
-		$this->schemaManager()->dropTable('xf_geolite_cache');
+		$this->schemaManager()->dropTable('xf_geoblock_cache');
 	}
 
 	public function checkRequirements(&$errors = [], &$warnings = [])

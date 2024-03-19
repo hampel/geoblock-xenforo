@@ -20,7 +20,7 @@ class GeoIp extends Entity
 
 	public static function getStructure(Structure $structure)
 	{
-		$structure->table = 'xf_geoip_cache';
+		$structure->table = 'xf_geoblock_cache';
 		$structure->shortName = 'Hampel\Geoblock:GeoIp';
 		$structure->primaryKey = 'ip';
 		$structure->columns = [

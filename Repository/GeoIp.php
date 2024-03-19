@@ -85,7 +85,7 @@ class GeoIp extends Repository
 			$cutOff = $this->getGeoCacheCutoff();
 		}
 
-		$this->db()->delete('xf_geoip_cache', 'lookup_date < ?', $cutOff);
+		$this->db()->delete('xf_geoblock_cache', 'lookup_date < ?', $cutOff);
 	}
 
 	public function getGeoCacheCutoff()

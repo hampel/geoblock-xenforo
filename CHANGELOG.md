@@ -8,7 +8,7 @@ CHANGELOG
 * php 8 compatibility fix: don't set a default parameter before non-default subsequent parameters
 * slight re-arrange to order of code logic for EU checking - no point checking anything related to EU blocking if we 
   don't have EU blocking enabled
-* rename table to xf_geolite_cache to avoid name clashes with other addons
+* rename table to xf_geoblock_cache to adhere to resource standards
 * addon now requires php 7+
 * explicitly check for phar extension on install
 
