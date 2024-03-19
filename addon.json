@@ -14,14 +14,9 @@
         "Maxmind": "https://dev.maxmind.com/geoip/geoip2/geolite2/"
     },
     "require": {
-        "php": [
-            "5.6.0",
-            "PHP 5.6+"
-        ],
-        "XF": [
-            "2010070",
-            "XenForo 2.1.0+"
-        ]
+        "php": ["7.0.0", "PHP 7.0+"],
+        "XF": ["2010070", "XenForo 2.1.0+"],
+        "php-ext/phar": ["*", "Phar extension"]
     },
     "icon": "fa-globe",
     "composer_autoload": "vendor/composer"
