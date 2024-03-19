@@ -1,1 +1,1 @@
-Error: <a href="{optionurl}">Maxmind database configuration</a> must be set in the options and the database must be downloaded. Use the <a href="admin.php?tools/update-maxmind">Update Maxmind database</a> tool to manually update it, or manually run the Cron task.
+Error: <a href="{optionurl}">Maxmind database configuration</a> must be set in the options and the database must be downloaded. Use the <a href="admin.php?tools/hampel-geoblock-update-maxmind">Update Maxmind database</a> tool to manually update it, or manually run the Cron task.

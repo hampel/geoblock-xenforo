@@ -85,9 +85,9 @@
     },
     "geoblock_error_configuration_required.txt": {
         "global_cache": false,
-        "version_id": 1000010,
-        "version_string": "1.0.0 Alpha",
-        "hash": "0d331f83087b3c3eb00a989736997cbb"
+        "version_id": 1020070,
+        "version_string": "1.2.0",
+        "hash": "b0b0571269fddf0347d2f58768fb3260"
     },
     "geoblock_in_eu.txt": {
         "global_cache": false,
