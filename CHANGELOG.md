@@ -1,12 +1,23 @@
 CHANGELOG
 =========
 
+1.2.0 (2024-03-19)
+------------------
+
+* bugfix: don't try to uppercase a null iso_code
+* php 8 compatibility fix: don't set a default parameter before non-default subsequent parameters
+* slight re-arrange to order of code logic for EU checking - no point checking anything related to EU blocking if we 
+  don't have EU blocking enabled
+* rename table to xf_geolite_cache to avoid name clashes with other addons
+* addon now requires php 7+
+* explicitly check for phar extension on install
+
 1.1.2 (2020-07-27)
 ------------------
 
 * check that vendor folder exists to prevent breaking forum if we somehow didn't run composer install
 * latest vendor dependencies
-* use mock mmdb database for unit testing testing
+* use mock mmdb database for unit testing
 * make subcontainer more testable by allowing paths to be replaced at runtime
 
 1.1.1 (2020-01-02)
