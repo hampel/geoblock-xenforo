@@ -11,6 +11,8 @@ CHANGELOG
 * rename table to xf_geoblock_cache to adhere to resource standards
 * addon now requires php 7+
 * explicitly check for phar extension on install
+* add legacy upgrade from XF 1.5 to Setup
+* bugfix: wrong link to database update tool in test tool error message
 
 1.1.2 (2020-07-27)
 ------------------
