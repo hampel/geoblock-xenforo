@@ -1,13 +1,16 @@
 <?php namespace Hampel\Geoblock;
 
 use XF\AddOn\AbstractSetup;
+use XF\AddOn\StepRunnerUpgradeTrait;
 use XF\Db\Schema\Create;
 
 class Setup extends AbstractSetup
 {
+    use StepRunnerUpgradeTrait;
+
 	public function install(array $stepParams = [])
 	{
-		$this->schemaManager()->createTable('xf_geoip_cache', function(Create $table)
+		$this->schemaManager()->createTable('xf_geolite_cache', function(Create $table)
 		{
 			$table->addColumn('ip', 'varbinary', 16);
 			$table->addColumn('iso_code', 'varchar', 2);
@@ -18,14 +21,18 @@ class Setup extends AbstractSetup
 		});
 	}
 
-	public function upgrade(array $stepParams = [])
-	{
-		// Nothing to do yet
-	}
+    // ################################ UPGRADE TO 1.2.0 ##################
+
+    public function upgrade1020070Step1()
+    {
+        $this->schemaManager()->renameTable('xf_geoip_cache', 'xf_geolite_cache' );
+    }
+
+    // ################################ Uninstall ##################
 
 	public function uninstall(array $stepParams = [])
 	{
-		$this->schemaManager()->dropTable('xf_geoip_cache');
+		$this->schemaManager()->dropTable('xf_geolite_cache');
 	}
 
 	public function checkRequirements(&$errors = [], &$warnings = [])
