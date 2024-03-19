@@ -2,6 +2,7 @@
 
 use XF\AddOn\AbstractSetup;
 use XF\AddOn\StepRunnerUpgradeTrait;
+use XF\Db\Schema\Alter;
 use XF\Db\Schema\Create;
 
 class Setup extends AbstractSetup
@@ -20,6 +21,22 @@ class Setup extends AbstractSetup
 			$table->addPrimaryKey('ip');
 		});
 	}
+
+    // ################################ LEGACY UPGRADE FROM XF 1.5 "GeoIP" ##################
+
+    public function upgrade1000070Step1()
+    {
+        // check for legacy upgrade from XF1
+        if ($this->schemaManager()->tableExists('xf_ip_geo'))
+        {
+            $this->schemaManager()->renameTable('xf_ip_geo', 'xf_geoip_cache' );
+            $this->schemaManager()->alterTable('xf_geoip_cache', function (Alter $table) {
+                $table->addColumn('eu', 'tinyint')->setDefault(0);
+                $table->changeColumn('ip', 'varbinary', 16);
+                $table->changeColumn('lookup_date', 'int');
+            });
+        }
+    }
 
     // ################################ UPGRADE TO 1.2.0 ##################
 
