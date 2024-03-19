@@ -2,8 +2,8 @@
     "legacy_addon_id": "GeoIP",
     "title": "Geoblock Registrations",
     "description": "Registration Geoblocking using Maxmind's GeoLite2 Database",
-    "version_id": 1010270,
-    "version_string": "1.1.2",
+    "version_id": 1020070,
+    "version_string": "1.2.0",
     "dev": "Simon Hampel",
     "dev_url": "https://xenforo.com/community/members/sim.4264/",
     "faq_url": "https://xenforo.com/community/resources/geoblock-registration.7516/field?field=faq",
@@ -14,9 +14,18 @@
         "Maxmind": "https://dev.maxmind.com/geoip/geoip2/geolite2/"
     },
     "require": {
-        "php": ["7.0.0", "PHP 7.0+"],
-        "XF": ["2010070", "XenForo 2.1.0+"],
-        "php-ext/phar": ["*", "Phar extension"]
+        "php": [
+            "7.0.0",
+            "PHP 7.0+"
+        ],
+        "XF": [
+            "2010070",
+            "XenForo 2.1.0+"
+        ],
+        "php-ext/phar": [
+            "*",
+            "Phar extension"
+        ]
     },
     "icon": "fa-globe",
     "composer_autoload": "vendor/composer"
