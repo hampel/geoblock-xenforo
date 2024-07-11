@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.2.1 (2024-07-10)
+------------------
+
+* latest composer dependencies - no changes to addon
+
 1.2.0 (2024-03-19)
 ------------------
 
