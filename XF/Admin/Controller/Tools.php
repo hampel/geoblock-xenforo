@@ -9,6 +9,7 @@ class Tools extends XFCP_Tools
 	public function actionHampelGeoblockUpdateMaxmind()
 	{
 		$this->setSectionContext('hampelGeoblockUpdateMaxmind');
+        $this->assertAdminPermission('option');
 
 		$messages = [];
 		/** @var Maxmind $geoblock */
@@ -40,6 +41,7 @@ class Tools extends XFCP_Tools
 	public function actionHampelGeoblockTest()
 	{
 		$this->setSectionContext('hampelGeoblockTest');
+        $this->assertAdminPermission('option');
 
 		$messages = [];
 		$results = false;
