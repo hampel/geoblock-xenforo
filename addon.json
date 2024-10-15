@@ -27,6 +27,6 @@
             "Phar extension"
         ]
     },
-    "icon": "fa-globe",
+    "icon": "fa-globe-stand",
     "composer_autoload": "vendor/composer"
 }
