@@ -1,6 +1,5 @@
 <?php namespace Hampel\Geoblock\Test;
 
-use Hampel\Geoblock\Util\IpGeo;
 
 class GeoblockTest extends AbstractTest
 {

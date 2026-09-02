@@ -2,7 +2,7 @@
 
 use Hampel\Geoblock\IpGeo;
 use Hampel\Geoblock\Spam\Checker\Geoblock;
-use Hampel\Geoblock\SubContainer\Api;
+use Hampel\Geoblock\SubContainer\Maxmind;
 use Mockery as m;
 use Tests\TestCase;
 use XF\Entity\User;
@@ -12,7 +12,7 @@ class SpamCheckerTest extends TestCase
 {
 	protected $ip;
 
-	/** @var Api */
+	/** @var Maxmind */
 	protected $api;
 
 	protected $checker;
@@ -142,7 +142,7 @@ class SpamCheckerTest extends TestCase
 
 	protected function mockApi()
 	{
-		return $this->mock('geoblock', Api::class, function ($mock) {
+		return $this->mock('geoblock', Maxmind::class, function ($mock) {
 
 		});
 	}
