@@ -53,6 +53,7 @@ class DatabaseExtractor
 
 		if (!$this->downloadDatabase($downloadUrl, $compressedDatabaseFile))
 		{
+			$this->cleanupDownload($compressedDatabaseFile);
 			return false;
 		}
 
@@ -60,6 +61,7 @@ class DatabaseExtractor
 
 		if (!$this->extractDatabase($compressedDatabaseFile, $extractedDatabasePath))
 		{
+			$this->cleanupDownload($compressedDatabaseFile);
 			return false;
 		}
 
@@ -67,8 +69,11 @@ class DatabaseExtractor
 
 		if (!$this->moveDatabase($abstractedDatabasePath, $destPath))
 		{
+			$this->cleanupDownload($compressedDatabaseFile);
 			return false;
 		}
+
+		$this->cleanupDownload($compressedDatabaseFile);
 
 		return $this->cleanupDatabase($abstractedDatabasePath);
 	}
@@ -145,11 +150,24 @@ class DatabaseExtractor
 		return $this->app->fs()->deleteDir($dir);
 	}
 
+	/**
+	 * The name must stay unique per call. PHP caches Phar objects by path for the life of the
+	 * process, so reusing one filename means a second update re-extracts the *first* archive
+	 * whatever was actually downloaded - silently, and reporting success.
+	 */
 	protected function getTempFile()
 	{
-		$filename = sprintf("%s.%s", $this->edition, $this->suffix);
+		$filename = sprintf("%s-%s.%s", $this->edition, uniqid(), $this->suffix);
 
 		return File::getNamedTempFile($filename);
+	}
+
+	protected function cleanupDownload($file)
+	{
+		if ($file && file_exists($file))
+		{
+			@unlink($file);
+		}
 	}
 
 	protected function getTempDest()
