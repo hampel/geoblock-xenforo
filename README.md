@@ -17,7 +17,7 @@ By [Simon Hampel](https://xenforo.com/community/members/sim.4264/).
 ## Requirements
 
  * PHP 7.2+
- * XenForo 2.1+
+ * XenForo 2.2+
  * Phar PHP extension - used to extract the GeoLite2 database download
  * Maxmind account with license key for GeoLite2 Database downloads (free)
  
