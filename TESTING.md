@@ -72,6 +72,16 @@ Also settled by machine:
   tests and a broken feature.
 * Every `_output/class_extensions/*.json` `to_class` exists on disk and is listed in
   `extension_hint.php`.
+* Every package in `composer.lock`'s `packages` array satisfies the declared PHP floor. The
+  platform pin is above the floor by necessity (see `CLAUDE.md`), so a `composer update` can
+  quietly select a runtime dependency the add-on's own declaration cannot run:
+
+  ```bash
+  python3 -c "
+  import json; l=json.load(open('composer.lock'))
+  for p in l['packages']: print(f\"  {p['name']:35} {p.get('require',{}).get('php','-')}\")"
+  ```
+
 * Build the release and unzip it: `vendor/` present, and `tests/`, `phpunit.xml`, `TESTING.md` and
   the Claude files absent. Ignore `vendor/**/tests/` hits — upstream packages ship their own.
 

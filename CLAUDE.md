@@ -34,6 +34,26 @@ php ../../../../cmd.php xf-addon:build-release Hampel/Geoblock
 zip root. **The `rm` line has to stay before the `mv`** — after it, the files it names have
 already been renamed and `rm -f` reports nothing.
 
+## The PHP floor, and why `composer.json` looks contradictory
+
+The declared floor is **7.2**, in three places that must agree: `addon.json` `require.php`,
+`composer.json` `require.php`, and the README. It is set by the runtime dependencies —
+`geoip2/geoip2` and `maxmind-db/reader` both want `>=7.2` — not by any syntax in this add-on.
+
+`config.platform.php` is **8.1**, and that is deliberately *not* the floor. Composer applies the
+platform pin to dev dependencies as well as runtime ones, and the test toolchain
+(`hampel/xenforo-test-framework ^3.0`, PHPUnit 10) requires 8.1. Pinning to 7.2 does not merely
+downgrade the tooling — the solve fails outright.
+
+The cost of that is real: the solve can select **runtime** packages above the declared floor, and
+they ship. `maxmind/web-service-common` is pinned to `^0.9.0` for exactly this reason — 0.11
+requires PHP 8.1, arrives transitively through `geoip2/geoip2`, and would land in the release zip
+of an add-on claiming 7.2.
+
+So after any `composer update`, check that the shipped tree still matches what the add-on
+promises — the `packages` array in `composer.lock`, not `packages-dev`, which never ships. The
+command is in `TESTING.md`.
+
 ## Two unrelated things called "test"
 
 The single most confusing thing in this repo:
