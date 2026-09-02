@@ -2,3 +2,4 @@ _data/
 vendor/
 _releases/
 .phpunit.cache/
+CLAUDE.local.md

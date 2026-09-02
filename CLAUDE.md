@@ -4,30 +4,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Scope
 
-This is one XenForo add-on (`Hampel/Geoblock`, "Geoblock Registrations") inside the install at
-`/srv/www/xenforo23.local`. Read that install's `AGENTS.md` first — it carries the XF conventions,
+This is one XenForo add-on — `Hampel/Geoblock`, "Geoblock Registrations". It sits at
+`src/addons/Hampel/Geoblock/` inside a XenForo install and is its own git repository; the
+install around it is not.
+
+Where the install has an `AGENTS.md` at its root, read it first — it carries the XF conventions,
 the `_output`/`_data` boundary, the `cmd.php` command signatures and the per-add-on git layout.
 This file covers only what is specific to Geoblock.
 
 ## Commands
 
-Run from this directory. `cmd.php` resolves the install from its own location, so the absolute path
-works from here.
+Run from this directory — it is the git repo, so `git`, `composer` and `vendor/bin/phpunit` all
+act on the right thing. `cmd.php` resolves the install from its own location rather than the
+working directory, so the relative path below works unchanged.
 
 ```bash
-composer install                                        # first time; vendor/ is gitignored
-vendor/bin/phpunit                                      # whole suite (43 tests)
-vendor/bin/phpunit --filter SubcontainerTest            # one test class
-vendor/bin/phpunit tests/Unit/IpGeoTest.php             # one file
+composer install                                  # first time; vendor/ is gitignored
+vendor/bin/phpunit                                # whole suite
+vendor/bin/phpunit --filter SubcontainerTest      # one test class
+vendor/bin/phpunit tests/Unit/IpGeoTest.php       # one file
 
-php /srv/www/xenforo23.local/cmd.php xf-dev:import --addon=Hampel/Geoblock
-php /srv/www/xenforo23.local/cmd.php xf-addon:export Hampel/Geoblock
-php /srv/www/xenforo23.local/cmd.php xf-addon:build-release Hampel/Geoblock
+php ../../../../cmd.php xf-dev:import --addon=Hampel/Geoblock
+php ../../../../cmd.php xf-addon:export Hampel/Geoblock
+php ../../../../cmd.php xf-addon:build-release Hampel/Geoblock
 ```
 
-`build.json` runs `composer install --no-dev` into the build output and strips `phpunit.xml`,
-`tests/` and `TESTING.md`, then moves every root `*.md` out of the upload directory — so dev
-dependencies and this file never reach a release zip.
+`build.json` runs `composer install --no-dev` into the build output, then removes `phpunit.xml`,
+`tests/`, `TESTING.md` and both Claude files before moving every remaining root `*.md` up to the
+zip root. **The `rm` line has to stay before the `mv`** — after it, the files it names have
+already been renamed and `rm -f` reports nothing.
 
 ## Two unrelated things called "test"
 
