@@ -1,24 +1,100 @@
+TESTING
+=======
 
-* Class extensions
-  * `XF\Admin\Controller\Tools`
-    *
-    *
-  * `XF\Service\User\Registration`
-    * 
+What this add-on touches, what breaks quietly, and which checks a machine can settle.
 
+## Surfaces
 
-* Code event listeners
-  * `app_admin_setup`
-    * register `geoblock.test` factory
-  * `app_setup`
-    * register `geoblock` subcontainer
-  * `spam_user_providers`
-    * register Geoblock spam provider
+**Class extensions**
 
+* `XF\Admin\Controller\Tools` — adds two ACP actions, `hampelGeoblockUpdateMaxmind` (download and
+  extract the GeoLite2 database) and `hampelGeoblockTest` (run a diagnostic). Both assert the
+  `option` admin permission. This is a commonly extended controller, so on a real forum this
+  add-on is usually one link in a chain of extensions — a conflict shows up as one add-on's
+  actions disappearing rather than as an error.
+* `XF\Service\User\Registration` — extends `checkForSpam()` to add the EU rejection. This runs on
+  every registration, so a fatal here takes registration down entirely.
 
-* Fragile points:
-	
+**Code event listeners**
 
-* Testing:
-  * run unit tests
-  * ...
+* `app_setup` — registers the `geoblock` sub-container.
+* `app_admin_setup` — registers the `geoblock.test` factory the ACP diagnostics resolve through.
+* `spam_user_providers` — registers the spam provider, but **only when the add-on is configured**.
+  An unconfigured install adds no provider at all, which is deliberate and is the first thing to
+  check when the country lists appear to do nothing.
+
+**Other artifacts**
+
+* Admin navigation: two entries under *Checks and Tests*, both gated on the `option` permission.
+* Cron: a weekly database download and a monthly cache prune. Note the cleanup entry and method
+  are named "daily" but the rule runs on the last day of the month.
+* Options: nine, all under the `geoblock` group. Schema: one table, `xf_geoblock_cache`.
+* No template modifications — the two templates are the add-on's own ACP pages.
+
+## Fragile points
+
+* **The lookup is a five-step fallback chain** — test mode, private/reserved, in-memory cache, DB
+  cache, MaxMind reader. A step returning `null` means "keep going"; the final `null` means "could
+  not decide", and every caller treats that as **allow**. So a broken lookup fails open, silently.
+  Registrations continue to be accepted and nothing appears in the error log.
+* **`isConfigured()` short-circuits on the licence key.** Anything downstream of it — the spam
+  provider registration, the database update tool, the reader — is inert without one, and the
+  symptom is silence rather than an error.
+* **EU blocking is not in the spam provider.** A provider cannot reject outright, so the EU path
+  lives in the `Registration` class extension and writes its own decision under a separate type.
+  Changing the block policy means changing it in three places: the spam provider, the registration
+  extension, and the ACP decider diagnostic, which reimplements the logic so an admin can probe a
+  country code without a live registration. They drift silently.
+* **The database extractor restores the phar stream wrapper** that XenForo unregisters. If that
+  call is lost, the download succeeds and the extraction fails.
+* **The extractor descends one directory level** to find the `.mmdb` inside the dated folder
+  MaxMind ships. A change to that archive layout breaks the update with the download still
+  reported as successful.
+* **The release zip must contain `vendor/`.** The build's exec steps cannot fail the build — the
+  exit status is discarded — so a Composer failure produces a zip with no dependencies in it, and
+  `Setup.php::checkRequirements()` is the only thing standing between that and a broken forum.
+
+## Automated
+
+`vendor/bin/phpunit` — 43 tests. Requires `composer install` first; `vendor/` is not committed.
+
+The suite boots a real XenForo app with only this add-on loaded, and covers the value object, the
+repository, the spam provider's decision table, and the sub-container's fallback chain.
+`tests/mock/country.mmdb` is a real cut-down MaxMind database, so the lookup tests exercise the
+genuine reader with no network.
+
+Also settled by machine:
+
+* `xf-dev:class-lint` — all classes load. Note it takes no add-on option and lints the whole
+  install, so a failure it reports may belong elsewhere.
+* Every option key named in code or templates has a file in `_output/options/`. `setOption()` and
+  `\XF::options()->x` both fail silently on an unknown key, so a renamed option leaves working
+  tests and a broken feature.
+* Every `_output/class_extensions/*.json` `to_class` exists on disk and is listed in
+  `extension_hint.php`.
+* Build the release and unzip it: `vendor/` present, and `tests/`, `phpunit.xml`, `TESTING.md` and
+  the Claude files absent. Ignore `vendor/**/tests/` hits — upstream packages ship their own.
+
+**Not covered:** `Maxmind\DatabaseExtractor` has no tests. It is the part that reaches the network,
+writes to the filesystem and manipulates a phar, and it is also the part most likely to break
+without anyone noticing until a database goes stale.
+
+## Needs a human
+
+* **Registration end to end.** The decision paths — approved, denied-and-moderated,
+  denied-and-rejected, EU-rejected, moderate-others — are unit tested against the provider, but
+  whether a real registration is actually blocked depends on XenForo's spam pipeline running the
+  provider at all. Register through the browser with a country in each list.
+* **The upgrade path.** Install the previous release, then upgrade from a built zip. A `Setup.php`
+  step that works on a fresh install and fails on an upgrade is the classic failure and no amount
+  of testing the working copy finds it. The legacy XF 1.5 path (the `xf_ip_geo` table rename) needs
+  a database that has actually been through it, which is the hardest fixture here to produce.
+* **A real MaxMind download.** Needs a live licence key and reaches the network. The ACP tool
+  reports success or failure, but only a human can decide whether to spend a download on a test.
+* **Judgement on the ACP pages** — whether the diagnostic output reads clearly and the phrases make
+  sense in context.
+
+Not human, despite looking it: whether the nav entries appear, whether a phrase resolved or is
+showing a raw key, and whether an admin without the `option` permission is refused. Those are
+assertions about server-rendered HTML and they only sit here because dispatching a route in a test
+is not yet set up for this add-on.
