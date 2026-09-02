@@ -42,7 +42,7 @@ class SubcontainerTest extends TestCase
 		// swap to a memory database which won't have anything in it
 		$this->swapFs('internal-data');
 
-		$this->setRequiredOptions('url_foo', 'path_foo');
+		$this->setRequiredOptions('key_foo', 'path_foo');
 
 		$this->assertFalse($this->geoblock->isConfigured());
 	}
@@ -51,7 +51,7 @@ class SubcontainerTest extends TestCase
 	{
 		$this->mockMmdb();
 
-		$this->setRequiredOptions('url_foo', 'path_foo');
+		$this->setRequiredOptions('key_foo', 'path_foo');
 
 		$this->assertTrue($this->geoblock->isConfigured());
 	}
@@ -178,7 +178,7 @@ class SubcontainerTest extends TestCase
 	public function test_getIpGeo_fetches_from_api_using_country()
 	{
 		$this->setTestMode(false);
-		$this->setRequiredOptions('url_foo', 'path_foo');
+		$this->setRequiredOptions('key_foo', 'path_foo');
 
 		$this->mockMmdb();
 
@@ -209,7 +209,7 @@ class SubcontainerTest extends TestCase
 		$this->fakesErrors();
 
 		$this->setTestMode(false);
-		$this->setRequiredOptions('url_foo', 'path_foo');
+		$this->setRequiredOptions('key_foo', 'path_foo');
 
 		$this->mockMmdb();
 
@@ -232,9 +232,9 @@ class SubcontainerTest extends TestCase
 		$this->setOption('geoblockTestMode', $enabled);
 	}
 
-	protected function setRequiredOptions($url = '', $path = '')
+	protected function setRequiredOptions($licenseKey = '', $path = '')
 	{
-		$this->setOption('geoblockDatabaseUrl', $url);
+		$this->setOption('geoblockLicenseKey', $licenseKey);
 		$this->setOption('geoblockDatabasePath', $path);
 	}
 

@@ -11,7 +11,7 @@ class GeoblockTest extends AbstractTest
 			$group = $this->app->finder('XF:OptionGroup')->whereId('geoblock')->fetchOne();
 
 			$this->errorMessage(\XF::phrase('geoblock_error_configuration_required', [
-				'optionurl' => $this->controller->buildLink('full:options/groups', $group) . "#geoblockDatabaseUrl",
+				'optionurl' => $this->controller->buildLink('full:options/groups', $group) . "#geoblockLicenseKey",
 			]));
 			return false;
 		}
