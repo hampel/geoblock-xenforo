@@ -1,6 +1,23 @@
 CHANGELOG
 =========
 
+1.3.0 (2026-09-05)
+------------------
+
+* bugfix: a failed database download could silently reinstall the previous database - PHP caches
+  `PharData` objects by path and the download always used the same temporary filename, so a second
+  update within one process re-extracted the first archive and reported success
+* bugfix: the "not configured" message in the admin control panel linked to `#geoblockDatabaseUrl`,
+  an option removed in 1.1.0, so the link landed on the option group rather than the field
+* run `enqueuePostUpgradeCleanUp()` on upgrade under XenForo 2.3 and above
+* now requires XenForo 2.2+
+* now requires PHP 7.2+ - the declaration said 7.0, but `geoip2/geoip2` and `maxmind-db/reader`
+  have always needed 7.2
+* the shipped dependency tree is now held within that floor - `maxmind/web-service-common` is
+  capped at `^0.9.0`, since 0.11 requires PHP 8.1 and arrives transitively through `geoip2/geoip2`
+* latest composer dependencies
+* development files no longer ship inside the release zip
+
 1.2.2 (2024-10-16)
 ------------------
 
