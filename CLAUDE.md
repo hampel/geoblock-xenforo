@@ -158,6 +158,34 @@ the real filesystem under a namespaced directory and clean up in `tearDown`.
 column is `varbinary(16)` with conversion in both directions and a mocked finder cannot tell you
 that round trip is wrong.
 
+## Versioning
+
+`addon.json` carries `version_id` and `version_string`, and they must be bumped together. The
+encoding is documented beside `XF::$versionId` in `src/XF.php` — `abbccde`, where `d` is the
+stability (alpha 1, beta 3, RC 5, stable 7, PL 9) and `e` is the level *within* that stability.
+So this add-on's `1020270` / `"1.2.2"` is stable level 0, and the next bumps are:
+
+    minor    1030011 / "1.3.0a1"   ->  1030070 / "1.3.0"
+    patch    1020311 / "1.2.3a1"   ->  1020370 / "1.2.3"
+
+Nothing enforces the pairing: `version_id` drives upgrade ordering and `version_string` only
+shows in the ACP and names the zip, so a mismatch survives unnoticed. Both numbers above increase
+from `1020270`, so no `--force` is needed — and if a bump ever refuses, the number is wrong rather
+than the check. `--force` only skips the downgrade guard.
+
+**Keep spaces out of `version_string`.** `AddOn::prepareVersionForFilename()` strips
+`[^a-z0-9-_. ]` but *keeps* spaces, so the XF-conventional `"1.0.0 Beta 2"` produces
+`Hampel-Geoblock-1.0.0 Beta 2.zip` — this add-on shipped three of those in 2019. It is legal and
+it breaks anything that splits a listing on whitespace. Use `1.3.0b1` or `1.3.0-beta1`. Note also
+that `sort -V` places a suffixed version *after* the version it suffixes, the reverse of the order
+they were built, so `tail -1` on a sorted release listing is only right when the newest release
+carries no suffix.
+
+**`addon.json` has no trailing newline, and that is the format** — no Hampel add-on's does. Do not
+add one: `json_hash` comes from `hashTextFile`, which strips `\r` but not `\n`, so a hand-added
+newline leaves the hash stale and the ACP reports the add-on as modified until
+`xf-addon:sync-json` runs.
+
 ## Legacy identity
 
 `addon.json` declares `"legacy_addon_id": "GeoIP"` — this add-on upgrades in place from the XF 1.5
