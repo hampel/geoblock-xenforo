@@ -61,7 +61,8 @@ What this add-on touches, what breaks quietly, and which checks a machine can se
 
 ## Automated
 
-`vendor/bin/phpunit` — 67 tests. Requires `composer install` first; `vendor/` is not committed.
+`vendor/bin/phpunit` — 68 tests across two suites. Requires `composer install` first; `vendor/`
+is not committed.
 
 The suite boots a real XenForo app with only this add-on loaded, and covers the value object, the
 repository, the spam provider's decision table, the sub-container's fallback chain, the database
@@ -78,7 +79,22 @@ Also settled by machine:
   `\XF::options()->x` both fail silently on an unknown key, so a renamed option leaves working
   tests and a broken feature.
 * Every `_output/class_extensions/*.json` `to_class` exists on disk and is listed in
-  `extension_hint.php`.
+  `extension_hint.php`, and every `from_class` is spelled the way the declared XF floor requires.
+  XenForo 2.3 renamed core classes and aliases the old names forward; 2.2 has no such mechanism,
+  so the **old** spellings are the only ones that work on both. Check before "modernising" one:
+
+  ```bash
+  php -r '$r = "../../../.."; require "$r/src/XF.php"; XF::start($r); XF::setupApp("XF\App");
+    echo XF::getClassForAlias("XF\Service\User\Registration"), "\n";'
+  ```
+
+  An alias resolving here proves only that 2.3 forwards the name — it says nothing about 2.2,
+  which has no `getClassForAlias` at all.
+
+* `_output/*/_metadata.json` agrees with what is on disk in **both** directions — an entry with no
+  file, and a file with no entry. The second is the more common drift and no XenForo command
+  reports it; `xf-dev:rebuild-metadata` skips files that have no entry, so it looks like a fix and
+  is not.
 * Every package in `composer.lock`'s `packages` array satisfies the declared PHP floor. The
   platform pin is above the floor by necessity (see `CLAUDE.md`), so a `composer update` can
   quietly select a runtime dependency the add-on's own declaration cannot run:
@@ -89,8 +105,19 @@ Also settled by machine:
   for p in l['packages']: print(f\"  {p['name']:35} {p.get('require',{}).get('php','-')}\")"
   ```
 
-* Build the release and unzip it: `vendor/` present, and `tests/`, `phpunit.xml`, `TESTING.md` and
-  the Claude files absent. Ignore `vendor/**/tests/` hits — upstream packages ship their own.
+* Build the release and unzip it: `vendor/` present, and `tests/`, `phpunit.xml`, `TESTING.md`
+  and the Claude files absent. Read the listing with `unzip -Z1`, not `unzip -l | awk`, which
+  truncates any path containing a space. Ignore `vendor/**/tests/` hits — upstream packages ship
+  their own. Sweep for dotfiles with the anchored pattern, which catches the zip **root** as well
+  as nested directories — the root is where `build.json`'s `rm` line operates:
+
+  ```bash
+  unzip -Z1 "$z" | grep -E '(^|/)\.[^/]*'          # want no output
+  ```
+
+  **The builder names the zip from `addon.json`'s version string alone and renames over whatever
+  is already there — no prompt, no backup.** On a branch still carrying a released version string
+  that destination is the previous release. Bump to an alpha first, or move `_releases/` aside.
 
 **Not covered:** an HTTP error status from MaxMind. `getUntrusted()` reports only transport
 failures, so a bad licence key answers with a 401 whose body is written to the temp file, and the
