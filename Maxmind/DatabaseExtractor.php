@@ -6,8 +6,6 @@ use XF\Util\File;
 
 class DatabaseExtractor
 {
-	// TODO: unit tests for this class
-
 	/** @var App */
 	protected $app;
 

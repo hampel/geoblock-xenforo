@@ -40,15 +40,16 @@ The declared floor is **7.2**, in three places that must agree: `addon.json` `re
 `composer.json` `require.php`, and the README. It is set by the runtime dependencies —
 `geoip2/geoip2` and `maxmind-db/reader` both want `>=7.2` — not by any syntax in this add-on.
 
-`config.platform.php` is **8.1**, and that is deliberately *not* the floor. Composer applies the
+`config.platform.php` is **8.3**, and that is deliberately *not* the floor. Composer applies the
 platform pin to dev dependencies as well as runtime ones, and the test toolchain
-(`hampel/xenforo-test-framework ^3.0`, PHPUnit 10) requires 8.1. Pinning to 7.2 does not merely
+(`hampel/xenforo-test-framework ^4.0`, PHPUnit 12) requires 8.3. Pinning to 7.2 does not merely
 downgrade the tooling — the solve fails outright.
 
 The cost of that is real: the solve can select **runtime** packages above the declared floor, and
-they ship. `maxmind/web-service-common` is pinned to `^0.9.0` for exactly this reason — 0.11
-requires PHP 8.1, arrives transitively through `geoip2/geoip2`, and would land in the release zip
-of an add-on claiming 7.2.
+they ship, and the gap the pin opens is now more than a full major version wide.
+`maxmind/web-service-common` is pinned to `^0.9.0` for exactly this reason — 0.11 requires PHP
+8.1, arrives transitively through `geoip2/geoip2`, and would land in the release zip of an add-on
+claiming 7.2.
 
 So after any `composer update`, check that the shipped tree still matches what the add-on
 promises — the `packages` array in `composer.lock`, not `packages-dev`, which never ships. The
@@ -142,7 +143,20 @@ with only this add-on active. The framework's helpers do the heavy lifting: `moc
 it and mounts it as a `mock://` filesystem, so lookups for `8.8.8.8` exercise the genuine reader
 with no network. The `*-country.json` fixtures feed `IpGeo::newFromModel()` directly.
 
-`Maxmind\DatabaseExtractor` has no coverage (there is a `// TODO` saying so).
+`tests/mock/GeoLite2-Country.tar.gz` and `GeoLite2-NoDatabase.tar.gz` are pre-built archives, not
+built at run time: `PharData` would otherwise need the phar wrapper restored a second time in the
+same process, which emits a notice.
+
+`DatabaseExtractorTest` is the awkward one. Its class docblock records why — the download goes
+through `XF\Http\Reader::getUntrusted()`, which validates the URL before the client is reached
+(so `setPrefix()` has to name a host that passes) and saves through Guzzle's `sink` (which
+`fakesHttp()` honours and `fakesHttpByUrl()` silently does not). It also extracts to a real path
+and reads back through `internal-data://`, so `swapFs('internal-data')` breaks it; the tests use
+the real filesystem under a namespaced directory and clean up in `tearDown`.
+
+`GeoIpCacheTest` uses `UsesDatabaseTransactions` against the real connection, because the `ip`
+column is `varbinary(16)` with conversion in both directions and a mocked finder cannot tell you
+that round trip is wrong.
 
 ## Legacy identity
 

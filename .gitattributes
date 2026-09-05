@@ -3,6 +3,7 @@
 * text=auto eol=lf
 
 *.mmdb   binary
+*.gz     binary
 *.png    binary
 *.jpg    binary
 *.gif    binary

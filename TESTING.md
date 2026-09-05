@@ -50,18 +50,25 @@ What this add-on touches, what breaks quietly, and which checks a machine can se
 * **The extractor descends one directory level** to find the `.mmdb` inside the dated folder
   MaxMind ships. A change to that archive layout breaks the update with the download still
   reported as successful.
+* **The download's temp filename must stay unique per call.** PHP caches `Phar` objects by path
+  for the life of the process, so a fixed name means a second update in one process re-extracts
+  the *first* archive — silently, and reporting success. That shipped from 2019 until September
+  2026, and was found only because four extractor tests passed alone and failed together — which
+  is evidence rather than flakiness.
 * **The release zip must contain `vendor/`.** The build's exec steps cannot fail the build — the
   exit status is discarded — so a Composer failure produces a zip with no dependencies in it, and
   `Setup.php::checkRequirements()` is the only thing standing between that and a broken forum.
 
 ## Automated
 
-`vendor/bin/phpunit` — 43 tests. Requires `composer install` first; `vendor/` is not committed.
+`vendor/bin/phpunit` — 67 tests. Requires `composer install` first; `vendor/` is not committed.
 
 The suite boots a real XenForo app with only this add-on loaded, and covers the value object, the
-repository, the spam provider's decision table, and the sub-container's fallback chain.
-`tests/mock/country.mmdb` is a real cut-down MaxMind database, so the lookup tests exercise the
-genuine reader with no network.
+repository, the spam provider's decision table, the sub-container's fallback chain, the database
+update path, and the cache table against a real connection. `tests/mock/country.mmdb` is a real
+cut-down MaxMind database, so the lookup tests exercise the genuine reader with no network, and
+`tests/mock/GeoLite2-*.tar.gz` are real archives, so the extractor tests exercise the genuine
+`PharData` path.
 
 Also settled by machine:
 
@@ -85,9 +92,10 @@ Also settled by machine:
 * Build the release and unzip it: `vendor/` present, and `tests/`, `phpunit.xml`, `TESTING.md` and
   the Claude files absent. Ignore `vendor/**/tests/` hits — upstream packages ship their own.
 
-**Not covered:** `Maxmind\DatabaseExtractor` has no tests. It is the part that reaches the network,
-writes to the filesystem and manipulates a phar, and it is also the part most likely to break
-without anyone noticing until a database goes stale.
+**Not covered:** an HTTP error status from MaxMind. `getUntrusted()` reports only transport
+failures, so a bad licence key answers with a 401 whose body is written to the temp file, and the
+failure surfaces later as `PharData` being unable to read it. `DatabaseExtractorTest` pins that as
+current behaviour rather than endorsing it — what gets logged says nothing about the licence key.
 
 ## Needs a human
 
