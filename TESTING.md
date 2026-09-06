@@ -130,17 +130,30 @@ current behaviour rather than endorsing it — what gets logged says nothing abo
   denied-and-rejected, EU-rejected, moderate-others — are unit tested against the provider, but
   whether a real registration is actually blocked depends on XenForo's spam pipeline running the
   provider at all. Register through the browser with a country in each list.
-* **The upgrade path — on a second install, not the development one.** Install the previous
-  release on a separate XenForo 2.2 install (`require.XF` is `2020070`, so 2.2 qualifies), then
-  upgrade it from a built zip. A `Setup.php` step that works on a fresh install and fails on an
-  upgrade is the classic failure and no amount of testing the working copy finds it.
+* **The upgrade path.** Install the previous release on a second install — `require.XF` is
+  `2020070`, so any XenForo 2.2 or later qualifies — then upgrade it from a built zip. A
+  `Setup.php` step that works on a fresh install and fails on an upgrade is the classic failure
+  and no amount of testing the working copy finds it.
 
-  **Doing it on the development install tests a different code path and still passes.**
-  `xf-addon:upgrade` calls `AddOnActionTrait::importAddOnData()`, which checks
-  `isAddOnOutputAvailable()` first: with `_output/` present — it is committed here — it runs
-  `xf-dev:import` against the working copy instead of queueing the `AddOnData` job a real user's
-  upgrade runs. `Setup.php`'s steps still execute, so the run completes and looks correct while
-  never exercising what a user does.
+  **On a development install this silently tests the wrong path, and a second install does not
+  fix that by itself.** `xf-addon:upgrade` calls `AddOnActionTrait::importAddOnData()`, which
+  checks `DevelopmentOutput::isAddOnOutputAvailable()`. That returns false only if the add-on is
+  skipped, **or** `development.enabled` is off, **or** `_output/` is missing. `_output/` is
+  committed here, so on any install with development mode on — which a second development install
+  also has — it runs `xf-dev:import` against the working copy instead of queueing the `AddOnData`
+  job a real upgrade runs. `Setup.php`'s steps execute either way, so the run completes and looks
+  correct while never exercising what a user does.
+
+  **The way out is the skip list**, on whichever install you test on. Setting the key *replaces*
+  the `['XF', 'XF*']` default rather than adding to it, so carry both across:
+
+  ```php
+  $config['development']['skipAddOns'] = ['XF', 'XF*', 'Hampel/Geoblock'];
+  ```
+
+  **Confirm it from the output, not from the config.** The real path prints `Importing add-on
+  data`; the wrong one prints an `xf-dev:import` invocation. Read that line before trusting a
+  green upgrade — it is the whole point of the exercise.
 
   This add-on has real code in that range: `upgrade1000070Step1` and `upgrade1020070Step1` are
   both gated, so "no steps run" is not the answer here the way it is for an add-on with none. The
