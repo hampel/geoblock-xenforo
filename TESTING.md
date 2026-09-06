@@ -130,10 +130,22 @@ current behaviour rather than endorsing it — what gets logged says nothing abo
   denied-and-rejected, EU-rejected, moderate-others — are unit tested against the provider, but
   whether a real registration is actually blocked depends on XenForo's spam pipeline running the
   provider at all. Register through the browser with a country in each list.
-* **The upgrade path.** Install the previous release, then upgrade from a built zip. A `Setup.php`
-  step that works on a fresh install and fails on an upgrade is the classic failure and no amount
-  of testing the working copy finds it. The legacy XF 1.5 path (the `xf_ip_geo` table rename) needs
-  a database that has actually been through it, which is the hardest fixture here to produce.
+* **The upgrade path — on a second install, not the development one.** Install the previous
+  release on a separate XenForo 2.2 install (`require.XF` is `2020070`, so 2.2 qualifies), then
+  upgrade it from a built zip. A `Setup.php` step that works on a fresh install and fails on an
+  upgrade is the classic failure and no amount of testing the working copy finds it.
+
+  **Doing it on the development install tests a different code path and still passes.**
+  `xf-addon:upgrade` calls `AddOnActionTrait::importAddOnData()`, which checks
+  `isAddOnOutputAvailable()` first: with `_output/` present — it is committed here — it runs
+  `xf-dev:import` against the working copy instead of queueing the `AddOnData` job a real user's
+  upgrade runs. `Setup.php`'s steps still execute, so the run completes and looks correct while
+  never exercising what a user does.
+
+  This add-on has real code in that range: `upgrade1000070Step1` and `upgrade1020070Step1` are
+  both gated, so "no steps run" is not the answer here the way it is for an add-on with none. The
+  legacy XF 1.5 path (the `xf_ip_geo` table rename) needs a database that has actually been
+  through it, which is the hardest fixture here to produce.
 * **A real MaxMind download.** Needs a live licence key and reaches the network. The ACP tool
   reports success or failure, but only a human can decide whether to spend a download on a test.
 * **Judgement on the ACP pages** — whether the diagnostic output reads clearly and the phrases make
