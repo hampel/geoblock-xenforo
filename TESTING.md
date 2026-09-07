@@ -91,6 +91,61 @@ Also settled by machine:
   An alias resolving here proves only that 2.3 forwards the name — it says nothing about 2.2,
   which has no `getClassForAlias` at all.
 
+* Every `_output/*.json` artifact carries every key its handler exports. XenForo adds columns
+  between releases, and an artifact written by an older XF simply lacks the new key — nothing
+  reports it, because `import()` does `bulkSet($json)` and an absent key leaves the entity at its
+  default. It surfaces at the worst moment instead: `xf-addon:build-release` runs
+  `xf-addon:export` internally, so the stale files turn dirty in the middle of cutting a release.
+  Run this from the add-on directory (the fence is unindented so the heredoc terminator works):
+
+```bash
+python3 - <<'EOF'
+import json, os, re, glob
+h = {}
+for f in glob.glob('../../../../src/XF/DevelopmentOutput/*.php'):
+    s = open(f).read()
+    m = re.search(r"getTypeDir\(\)\s*\{\s*return '([a-z_]+)'", s, re.S)
+    k = re.search(r"\$keys = \[(.*?)\];", s, re.S)
+    if m and k: h[m.group(1)] = re.findall(r"'([a-z_0-9]+)'", k.group(1))
+for d in sorted(os.listdir('_output')):
+    p = os.path.join('_output', d)
+    if not os.path.isdir(p) or d not in h: continue
+    for fn in sorted(os.listdir(p)):
+        if not fn.endswith('.json') or fn == '_metadata.json': continue
+        miss = [k for k in h[d] if k not in json.load(open(os.path.join(p, fn)))]
+        if miss: print(f"{d}/{fn}: missing {miss}")
+print('checked')
+EOF
+```
+
+  Keys a handler adds *after* `pullEntityKeys()` are not in its `$keys` list, so they will read as
+  "extra" if you also print those — `options` gains `default_value` and `relations` that way.
+  Extras are expected; missing keys are the finding.
+
+  **Fix by re-exporting, never by hand.** `DevelopmentOutput::export($entity)` is the call
+  `DevOutputWritable::postSave()` makes, so the file and its `_metadata.json` hash come out
+  canonical together:
+
+  ```bash
+  php -r '$r = "../../../.."; require "$r/src/XF.php"; XF::start($r);
+    $app = XF::setupApp("XF\App"); $out = $app->developmentOutput();
+    foreach ([XF\Finder\OptionGroupFinder::class, XF\Finder\OptionFinder::class,
+              XF\Finder\AdminNavigationFinder::class] as $finder) {
+      foreach (XF::finder($finder)->where("addon_id", "Hampel/Geoblock")->fetch() as $e) {
+        $out->export($e);
+      }
+    }'
+  ```
+
+  Hand-writing a missing key, or copying the shape from a sibling artifact, is how this defect
+  spread from this add-on into `Hampel/HelpSpot`. Note this is **not** `xf-dev:export`, which
+  rewrites the filesystem from the database for every add-on.
+
+  The generated hint files drift the same way and are not JSON, so the check above misses them —
+  compare `extension_hint.php` and `option_hint.php` against a recently-exported sibling. The JSON
+  artifacts end with **no** trailing newline and the PHP hint files **do**; both are the
+  generators' own output, not drift.
+
 * `_output/*/_metadata.json` agrees with what is on disk in **both** directions — an entry with no
   file, and a file with no entry. The second is the more common drift and no XenForo command
   reports it; `xf-dev:rebuild-metadata` skips files that have no entry, so it looks like a fix and
