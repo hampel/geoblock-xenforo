@@ -25,9 +25,7 @@ class Registration extends XFCP_Registration
             return; // stop if user already rejected
         }
 
-        $ip = \XF\Util\Ip::convertIpStringToBinary(
-            $this->app->request()->getIp(true)
-        );
+        $ip = $this->app->request()->getIp(true);
 
         /** @var Maxmind $api */
         $api = $this->app->get('geoblock');
