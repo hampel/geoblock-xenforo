@@ -56,6 +56,15 @@ What this add-on touches, what breaks quietly, and which checks a machine can se
   membership correctly, and the decider tool takes "in EU" from a checkbox rather than a lookup, so
   between them they look like end-to-end proof while neither executes the line.
 
+* **A phrase body is trusted; its parameters are escaped.** Verified by rendering
+  `admin:hampel_geoblock_tools_test` on 2026-09-27. `geoblock_error_configuration_required` and
+  `geoblock_test_isocode_explain` both contain markup and it renders live, so `{{ $message.message }}`
+  is not escaping the phrase itself — which is what makes those two work. Interpolated parameters
+  *are* escaped, so `geoblock_not_found`'s `{ip}`, which comes from an admin form field, renders
+  `&lt;script&gt;` rather than a live tag. Both halves matter: adding markup to a phrase is safe,
+  and interpolating user input is safe, but putting markup *through* a parameter will not work and
+  should not be made to.
+
 * **The database extractor restores the phar stream wrapper** that XenForo unregisters. If that
   call is lost, the download succeeds and the extraction fails.
 * **The extractor descends one directory level** to find the `.mmdb` inside the dated folder
@@ -233,7 +242,17 @@ current behaviour rather than endorsing it — what gets logged says nothing abo
 * **Judgement on the ACP pages** — whether the diagnostic output reads clearly and the phrases make
   sense in context.
 
-Not human, despite looking it: whether the nav entries appear, whether a phrase resolved or is
-showing a raw key, and whether an admin without the `option` permission is refused. Those are
-assertions about server-rendered HTML and they only sit here because dispatching a route in a test
-is not yet set up for this add-on.
+**Not human, and no longer blocked on tooling.** Whether a phrase resolved or is showing a raw
+key, whether an admin without the `option` permission is refused, and what the page title is set to
+are all assertable now that the suite is on `hampel/xenforo-test-framework` `^5.0`: `dispatch()`
+runs the real route through `preDispatch()`, `renderTemplate()` and `renderReply()` return the HTML,
+`assertNoTemplateErrors()` says whether the render was clean, and `pageParam()` reads what
+`<xf:title>` set. None of it is written yet — these are the next tests worth adding, not human
+checks. Two cautions from the framework's own notes: an admin route dispatched without `is_admin`
+throws rather than returning 403, so the control case is `actingAsMember(['is_admin' => true])` with
+no admin permissions granted; and `assertSee()` passing does not mean the render was clean, which is
+what `assertNoTemplateErrors()` is for.
+
+**Page furniture stays human.** Navigation, header and footer come from XenForo's own `Admin` app
+classes rather than from this add-on's templates, so whether the two nav entries actually appear is
+still something to look at.
