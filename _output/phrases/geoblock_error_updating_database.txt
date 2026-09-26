@@ -1,0 +1,1 @@
+There were errors received while updating the database, please check the server error log.

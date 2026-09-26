@@ -89,6 +89,12 @@
         "version_string": "1.2.0",
         "hash": "b0b0571269fddf0347d2f58768fb3260"
     },
+    "geoblock_error_updating_database.txt": {
+        "global_cache": false,
+        "version_id": 1030111,
+        "version_string": "1.3.1a1",
+        "hash": "74009529a7329e23b18c22a3f62bc1d4"
+    },
     "geoblock_in_eu.txt": {
         "global_cache": false,
         "version_id": 1000010,

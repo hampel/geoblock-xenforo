@@ -19,7 +19,7 @@ class Tools extends XFCP_Tools
 		{
 			if (!$this->app->get('geoblock')->updateDatabase())
 			{
-				$messages[] = "There were errors received while updating the database, please check the server error log.";
+				$messages[] = \XF::phrase('geoblock_error_updating_database');
 			}
 		}
 
