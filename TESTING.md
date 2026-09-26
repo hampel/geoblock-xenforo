@@ -45,6 +45,17 @@ What this add-on touches, what breaks quietly, and which checks a machine can se
   Changing the block policy means changing it in three places: the spam provider, the registration
   extension, and the ACP decider diagnostic, which reimplements the logic so an admin can probe a
   country code without a live registration. They drift silently.
+* **`getIpGeo()` takes a dotted-quad string, never packed binary.** Conversion happens downstream,
+  in `Finder\GeoIp::getGeoIp()` and `Entity\GeoIp::verifyIp()`, where the `varbinary(16)` column
+  needs it. Convert before calling and there is no error to notice:
+  `Repository\GeoIp::checkPrivateOrReserved()` fails `filter_var()` on the raw bytes and returns
+  iso `??` at step 2, before any lookup, which is indistinguishable from an address the database
+  genuinely cannot place. `geoblockCheckEu()` did this from 2019 until 1.3.1, so `isInEu()` was
+  false for every address and EU blocking silently did nothing in all eleven releases. Both ACP
+  diagnostics masked it — the lookup tool passes the admin's own string and so reports EU
+  membership correctly, and the decider tool takes "in EU" from a checkbox rather than a lookup, so
+  between them they look like end-to-end proof while neither executes the line.
+
 * **The database extractor restores the phar stream wrapper** that XenForo unregisters. If that
   call is lost, the download succeeds and the extraction fails.
 * **The extractor descends one directory level** to find the `.mmdb` inside the dated folder
@@ -61,7 +72,7 @@ What this add-on touches, what breaks quietly, and which checks a machine can se
 
 ## Automated
 
-`vendor/bin/phpunit` — 68 tests across two suites. Requires `composer install` first; `vendor/`
+`vendor/bin/phpunit` — 74 tests across two suites. Requires `composer install` first; `vendor/`
 is not committed.
 
 The suite boots a real XenForo app with only this add-on loaded, and covers the value object, the
@@ -181,10 +192,13 @@ current behaviour rather than endorsing it — what gets logged says nothing abo
 
 ## Needs a human
 
-* **Registration end to end.** The decision paths — approved, denied-and-moderated,
-  denied-and-rejected, EU-rejected, moderate-others — are unit tested against the provider, but
-  whether a real registration is actually blocked depends on XenForo's spam pipeline running the
-  provider at all. Register through the browser with a country in each list.
+* **Registration end to end.** The provider's decision paths — approved, denied-and-moderated,
+  denied-and-rejected, moderate-others — are unit tested, and the EU path separately in
+  `RegistrationEuTest` against the `Registration` extension, which is where it lives rather than in
+  the provider. What no unit test settles is whether a real registration is actually blocked: that
+  depends on XenForo's spam pipeline running the provider at all, and on the extension being in the
+  chain on a forum where other add-ons extend the same service. Register through the browser with a
+  country in each list, and once with the EU option on.
 * **The upgrade path.** Install the previous release on a second install — `require.XF` is
   `2020070`, so any XenForo 2.2 or later qualifies — then upgrade it from a built zip. A
   `Setup.php` step that works on a fresh install and fails on an upgrade is the classic failure

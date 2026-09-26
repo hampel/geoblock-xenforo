@@ -86,6 +86,15 @@ as the `geoblock` sub-container in `Listener::appSetup()`. Order matters:
 
 Returning `null` means "we could not decide" and every caller treats that as **allow**.
 
+**`getIpGeo()` takes a dotted-quad string, never packed binary**, and the pipeline converts at the
+database boundary itself — `Finder\GeoIp::getGeoIp()` and `Entity\GeoIp::verifyIp()` each call
+`XF\Util\Ip::convertIpStringToBinary()` for the `varbinary(16)` column. A caller that converts
+first gets no error: `checkPrivateOrReserved()` fails `filter_var()` on the raw bytes and returns
+iso `??` at step 2, before any lookup, so the result looks like an ordinary undecidable address.
+`geoblockCheckEu()` did exactly that from 2019 until 1.3.1, which made `isInEu()` false for every
+address on earth and EU blocking a no-op in all eleven releases. `tests/Unit/RegistrationEuTest.php`
+pins the contract.
+
 `IpGeo` is a plain immutable value object (not an entity) and is the only currency between layers.
 `IpGeo::newFromModel()` degrades through `country` → `registeredCountry` → continent-only (iso `01`,
 "Anonymous Proxy") → `00` "Other Country", so the reader never throws for a thin record.
@@ -135,7 +144,22 @@ older than `Option\CacheExpiry` days — note the entry and method are named "da
 ## Tests
 
 `tests/TestCase.php` sets `$addonsToLoad = ['Hampel/Geoblock']`, so the suite boots a real XF app
-with only this add-on active. The framework's helpers do the heavy lifting: `mockRepository()`,
+with only this add-on active.
+
+**`hampel/xenforo-test-framework` is constrained to `^5.0` for a reason — do not relax it to reach
+an older PHP.** With `$addonsToLoad` set, every release before 4.3.2 built its isolated extension
+map from the raw `from_class` spelling, while XF 2.3 keys its own map on `XF::getClassForAlias()`.
+Both of this add-on's extensions are registered on pre-2.3 names, which the `2020070` floor
+requires, so on an older framework **neither is applied inside the suite** and a test of either
+silently exercises XenForo's class instead. Nothing reports it; the suite is green either way. The
+one-line check, which belongs in any test that covers an extension:
+
+```php
+$this->assertInstanceOf(
+    \Hampel\Geoblock\XF\Service\User\Registration::class,
+    $this->app->service(\XF\Service\User\Registration::class)
+);
+``` The framework's helpers do the heavy lifting: `mockRepository()`,
 `swap()` (used to replace `database.canonical`/`database.abstracted` inside the sub-container),
 `setOption()`, `fakesErrors()` + `assertExceptionLogged()`, `expectPhrase()`.
 
@@ -163,15 +187,29 @@ that round trip is wrong.
 `addon.json` carries `version_id` and `version_string`, and they must be bumped together. The
 encoding is documented beside `XF::$versionId` in `src/XF.php` — `abbccde`, where `d` is the
 stability (alpha 1, beta 3, RC 5, stable 7, PL 9) and `e` is the level *within* that stability.
-So this add-on's `1020270` / `"1.2.2"` is stable level 0, and the next bumps are:
+So `1030070` / `"1.3.0"` is stable level 0, and `1030111` / `"1.3.1a1"` is alpha 1 of the next
+patch.
 
-    minor    1030011 / "1.3.0a1"   ->  1030070 / "1.3.0"
-    patch    1020311 / "1.2.3a1"   ->  1020370 / "1.2.3"
+**Open the development cycle before the work, not at release time.** A tree still carrying the last
+released version names its build zip over that release: the builder derives the filename from
+`version_string` alone and renames over the destination with no prompt and no backup. From a
+released `1.3.0` the cycle opens at the smallest bump, `1030111` / `"1.3.1a1"`, and from an open
+alpha the moves are:
 
-Nothing enforces the pairing: `version_id` drives upgrade ordering and `version_string` only
-shows in the ACP and names the zip, so a mismatch survives unnoticed. Both numbers above increase
-from `1020270`, so no `--force` is needed — and if a bump ever refuses, the number is wrong rather
-than the check. `--force` only skips the downgrade guard.
+    next alpha     1030112 / "1.3.1a2"
+    release it     1030170 / "1.3.1"
+    minor instead  1040070 / "1.4.0"
+
+**Take the smallest bump even when the work looks bigger.** Raising later is free; lowering is not
+available at all, because `AddOn::canUpgrade()` requires the json `version_id` to be strictly
+greater than the installed one — so an install already on `1030111` will not accept `1030070`, and
+`AddOnController::actionUpgrade()` offers users no override.
+
+Nothing enforces the id/string pairing: `version_id` drives upgrade ordering and `version_string`
+only shows in the ACP and names the zip, so a mismatch survives unnoticed. `1030110` paired with
+`"1.3.1a1"` is the easy slip — that id is alpha level **0**, because `e` is the level within the
+stability, not a spare digit. If a bump is ever refused the number is wrong rather than the check;
+`--force` only skips the downgrade guard and is not the answer.
 
 **Keep spaces out of `version_string`.** `AddOn::prepareVersionForFilename()` strips
 `[^a-z0-9-_. ]` but *keeps* spaces, so the XF-conventional `"1.0.0 Beta 2"` produces
