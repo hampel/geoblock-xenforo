@@ -3,6 +3,8 @@
 
 class GeoblockTest extends AbstractTest
 {
+	protected $defaultData = ['ip' => ''];
+
 	public function run()
 	{
 		if (!$this->api->isConfigured())

@@ -8,6 +8,8 @@ use Hampel\Geoblock\Option\ModerateOthers;
 
 class IsoDeciderTest extends AbstractTest
 {
+	protected $defaultData = ['isocode' => ''];
+
 	public function run()
 	{
 		$isocode = strtoupper($this->data['isocode']);
