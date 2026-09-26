@@ -6,7 +6,7 @@
 		"maxmind/web-service-common": "^0.9.0"
 	},
 	"require-dev": {
-		"hampel/xenforo-test-framework": "^4.0",
+		"hampel/xenforo-test-framework": "^5.0",
 		"league/flysystem-memory": "^1.0"
 	},
     "autoload-dev": {
