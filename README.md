@@ -1,5 +1,4 @@
-Geoblock Registrations for XenForo
-==================================
+# Geoblock Registrations for XenForo
 
 This XenForo addon provides GeoIP Geoblocking using Maxmind's GeoLite2 database.
 

@@ -51,6 +51,14 @@ they ship, and the gap the pin opens is now more than a full major version wide.
 8.1, arrives transitively through `geoip2/geoip2`, and would land in the release zip of an add-on
 claiming 7.2.
 
+**`league/flysystem-memory` is capped at `^1.0` by XenForo, not by choice, and the lock does not
+describe what runs.** XF 2.3.12 ships `league/flysystem` 1.0.70 in `src/vendor/`, and core's
+autoloader is registered first, so core's copy wins every `League\Flysystem\*` class. The add-on's
+own lock resolves 1.1.10 — measured, and it never loads; only `MemoryAdapter`, which core does not
+ship, comes from the add-on's tree. It works because the adapter needs nothing beyond flysystem 1.x
+interfaces. So moving the adapter to 3.x would pair it with a flysystem it never gets, and
+`composer outdated` reporting that major as available is not an invitation.
+
 So after any `composer update`, check that the shipped tree still matches what the add-on
 promises — the `packages` array in `composer.lock`, not `packages-dev`, which never ships. The
 command is in `TESTING.md`.

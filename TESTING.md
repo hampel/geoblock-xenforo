@@ -1,5 +1,4 @@
-TESTING
-=======
+# TESTING
 
 What this add-on touches, what breaks quietly, and which checks a machine can settle.
 
@@ -158,8 +157,9 @@ EOF
   ```
 
   Hand-writing a missing key, or copying the shape from a sibling artifact, is how this defect
-  spread from this add-on into `Hampel/HelpSpot`. Note this is **not** `xf-dev:export`, which
-  rewrites the filesystem from the database for every add-on.
+  propagates: a sibling is only as current as the last thing that wrote it, so copying its shape
+  reproduces whatever it was missing. Note this is **not** `xf-dev:export`, which rewrites the
+  filesystem from the database for every add-on.
 
   The generated hint files drift the same way and are not JSON, so the check above misses them —
   compare `extension_hint.php` and `option_hint.php` against a recently-exported sibling. The JSON
@@ -170,6 +170,20 @@ EOF
   file, and a file with no entry. The second is the more common drift and no XenForo command
   reports it; `xf-dev:rebuild-metadata` skips files that have no entry, so it looks like a fix and
   is not.
+* `xf-dev:unused-phrase-finder --addon Hampel/Geoblock` — **read the list, never act on it, and
+  never pass `--delete-all` here.** It reports nine phrases and **all nine are false positives**,
+  because the finder needs a literal `\XF::phrase('name')` and this add-on reaches them two other
+  ways: the six `geoblock_decision_*` are composed as `\XF::phrase("geoblock_decision_{$decision}")`
+  in the ACP decider, and `geoblock_registration_denied_list`,
+  `geoblock_registration_neither_allowed_nor_denied` and `geoblock_registration_in_eu` are passed to
+  `logDetail()`, which XenForo resolves as a phrase internally and which is not an `XF::phrase()`
+  call at all. Deleting them would empty the decider's output and the spam-log detail text.
+
+  The documented guard grep — the one that lists calls the scanner cannot see — returns **nothing**
+  here, so it does not catch this. Its exclusion pattern accepts any quoted run without spaces,
+  which an interpolated double-quoted string satisfies. Read the finder's list against the code
+  instead.
+
 * Every package in `composer.lock`'s `packages` array satisfies the declared PHP floor. The
   platform pin is above the floor by necessity (see `CLAUDE.md`), so a `composer update` can
   quietly select a runtime dependency the add-on's own declaration cannot run:
