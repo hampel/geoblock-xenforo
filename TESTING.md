@@ -49,7 +49,7 @@ What this add-on touches, what breaks quietly, and which checks a machine can se
   needs it. Convert before calling and there is no error to notice:
   `Repository\GeoIp::checkPrivateOrReserved()` fails `filter_var()` on the raw bytes and returns
   iso `??` at step 2, before any lookup, which is indistinguishable from an address the database
-  genuinely cannot place. `geoblockCheckEu()` did this from 2019 until 1.3.1, so `isInEu()` was
+  genuinely cannot place. `geoblockCheckEu()` did this from 2019 until 1.4.0, so `isInEu()` was
   false for every address and EU blocking silently did nothing in all eleven releases. Both ACP
   diagnostics masked it — the lookup tool passes the admin's own string and so reports EU
   membership correctly, and the decider tool takes "in EU" from a checkbox rather than a lookup, so

@@ -99,7 +99,7 @@ database boundary itself — `Finder\GeoIp::getGeoIp()` and `Entity\GeoIp::verif
 `XF\Util\Ip::convertIpStringToBinary()` for the `varbinary(16)` column. A caller that converts
 first gets no error: `checkPrivateOrReserved()` fails `filter_var()` on the raw bytes and returns
 iso `??` at step 2, before any lookup, so the result looks like an ordinary undecidable address.
-`geoblockCheckEu()` did exactly that from 2019 until 1.3.1, which made `isInEu()` false for every
+`geoblockCheckEu()` did exactly that from 2019 until 1.4.0, which made `isInEu()` false for every
 address on earth and EU blocking a no-op in all eleven releases. `tests/Unit/RegistrationEuTest.php`
 pins the contract.
 
@@ -195,23 +195,25 @@ that round trip is wrong.
 `addon.json` carries `version_id` and `version_string`, and they must be bumped together. The
 encoding is documented beside `XF::$versionId` in `src/XF.php` — `abbccde`, where `d` is the
 stability (alpha 1, beta 3, RC 5, stable 7, PL 9) and `e` is the level *within* that stability.
-So `1030070` / `"1.3.0"` is stable level 0, and `1030111` / `"1.3.1a1"` is alpha 1 of the next
-patch.
+So `1030070` / `"1.3.0"` is stable level 0, and `1040011` / `"1.4.0a1"` is alpha 1 of the next
+minor.
 
 **Open the development cycle before the work, not at release time.** A tree still carrying the last
 released version names its build zip over that release: the builder derives the filename from
 `version_string` alone and renames over the destination with no prompt and no backup. From a
-released `1.3.0` the cycle opens at the smallest bump, `1030111` / `"1.3.1a1"`, and from an open
-alpha the moves are:
+released `1.3.0` the cycle opens at the smallest bump, `1030111` / `"1.3.1a1"`. This cycle was
+then raised to a minor, so from `1040011` the moves are:
 
-    next alpha     1030112 / "1.3.1a2"
-    release it     1030170 / "1.3.1"
-    minor instead  1040070 / "1.4.0"
+    next alpha     1040012 / "1.4.0a2"
+    release it     1040070 / "1.4.0"
 
 **Take the smallest bump even when the work looks bigger.** Raising later is free; lowering is not
 available at all, because `AddOn::canUpgrade()` requires the json `version_id` to be strictly
-greater than the installed one — so an install already on `1030111` will not accept `1030070`, and
-`AddOnController::actionUpgrade()` offers users no override.
+greater than the installed one, and `AddOnController::actionUpgrade()` offers users no override.
+This cycle is the worked example in both directions: it opened at `1030111`, was raised to
+`1040011` once the scope was clear, and **can no longer be released as `1.3.1`** — `1030170` is
+below the installed `1040011`, so the ACP would refuse it. That is the asymmetry, not a mistake:
+the raise cost nothing and the reverse is simply unavailable.
 
 Nothing enforces the id/string pairing: `version_id` drives upgrade ordering and `version_string`
 only shows in the ACP and names the zip, so a mismatch survives unnoticed. `1030110` paired with
