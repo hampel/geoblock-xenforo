@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 1.4.0 (2026-09-27)
+
+* bugfix: EU registration blocking has never worked. The visitor's IP was converted to binary
+  before the country lookup, which takes a dotted-quad string, so every address came back
+  unplaceable and no EU registration was ever rejected. Present in every release since 1.0.0.
+  **If you have "Reject EU registrations" enabled, EU registrations will start being rejected
+  after this upgrade** - that is the option working for the first time, not a new behaviour
+* bugfix: the *Checks and Tests* tools logged two PHP warnings, one of them a deprecation on PHP
+  8.1 and above, when submitted with a field missing
+* the admin-panel message shown when a MaxMind database update fails is now a phrase, so it can be
+  translated
+
 ## 1.3.0 (2026-09-05)
 
 * bugfix: a failed database download could silently reinstall the previous database - PHP caches
