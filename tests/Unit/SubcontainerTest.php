@@ -56,6 +56,32 @@ class SubcontainerTest extends TestCase
 		$this->assertTrue($this->geoblock->isConfigured());
 	}
 
+	public function test_configured_with_a_database_and_no_license_key()
+	{
+		// The license key is what DOWNLOADS the database; it is not what makes a lookup possible.
+		// A forum holding a database by any other means - an external cron running
+		// geoblock:update-database, rsync, a shared mount - must still answer lookups. Until 1.5.0
+		// it did not: isConfigured() required the key, so no key meant no spam provider registered
+		// and no lookup reaching the reader, with nothing reporting it. Restoring that condition
+		// has to fail here.
+		$this->mockMmdb();
+
+		$this->setRequiredOptions('', 'path_foo');
+
+		$this->assertTrue($this->geoblock->isConfigured());
+	}
+
+	public function test_not_configured_with_a_license_key_and_no_database()
+	{
+		// The other direction, and it must not move: a key on its own buys nothing, because there
+		// is nothing to read.
+		$this->swapFs('internal-data');
+
+		$this->setRequiredOptions('key_foo', 'path_foo');
+
+		$this->assertFalse($this->geoblock->isConfigured());
+	}
+
 	public function test_getIpGeo_returns_correct_values_with_testmode_enabled()
 	{
 		$this->setTestMode();

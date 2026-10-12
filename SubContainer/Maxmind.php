@@ -38,10 +38,18 @@ class Maxmind extends AbstractSubContainer
 		};
 	}
 
+	/**
+	 * Whether lookups can happen, which is a question about the database file and not about the
+	 * license key. The key is what DOWNLOADS the database - updateDatabase() checks it, and reports
+	 * when it is missing - so requiring it here conflated "can fetch a database" with "has one".
+	 * That cost the add-on its whole purpose on any forum holding a database it did not download
+	 * itself: no license key meant no spam provider registered and no lookup reaching the reader,
+	 * silently. Before 1.5.0 there was no way to get into that state through the add-on; the option
+	 * to manage updates externally is what creates it.
+	 */
 	public function isConfigured()
 	{
-		return !empty(LicenseKey::get())
-			&& !empty(DatabasePath::get())
+		return !empty(DatabasePath::get())
 			&& $this->app->fs()->has($this->databaseAbstracted());
 	}
 
