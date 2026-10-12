@@ -43,9 +43,11 @@ What this add-on touches, what breaks quietly, and which checks a machine can se
   cache, MaxMind reader. A step returning `null` means "keep going"; the final `null` means "could
   not decide", and every caller treats that as **allow**. So a broken lookup fails open, silently.
   Registrations continue to be accepted and nothing appears in the error log.
-* **`isConfigured()` short-circuits on the licence key.** Anything downstream of it — the spam
-  provider registration, the database update tool, the reader — is inert without one, and the
-  symptom is silence rather than an error.
+* **`isConfigured()` short-circuits on the database file.** Everything downstream of it — the spam
+  provider registration, the reader, the build date the ACP shows — is inert without one, and the
+  symptom is silence rather than an error. It asked for the licence key as well until 1.5.0, which
+  made the add-on inert on any forum holding a database it had not downloaded itself; the key now
+  gates only `updateDatabase()`, which is what downloads one.
 * **EU blocking is not in the spam provider.** A provider cannot reject outright, so the EU path
   lives in the `Registration` class extension and writes its own decision under a separate type.
   Changing the block policy means changing it in three places: the spam provider, the registration
