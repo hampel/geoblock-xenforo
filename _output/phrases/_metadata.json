@@ -287,6 +287,12 @@
         "version_string": "1.0.0 Alpha",
         "hash": "8df7ec9a6ef183d943fea107a25a3929"
     },
+    "option.geoblockAutoUpdate.txt": {
+        "global_cache": false,
+        "version_id": 1040111,
+        "version_string": "1.4.1a1",
+        "hash": "3c53a35c9a943ddf97d71bde4562ddb6"
+    },
     "option.geoblockCacheExpiry.txt": {
         "global_cache": false,
         "version_id": 1000010,
@@ -340,6 +346,12 @@
         "version_id": 1000010,
         "version_string": "1.0.0 Alpha",
         "hash": "fee2cf10151df76dbe03839ae9e70d63"
+    },
+    "option_explain.geoblockAutoUpdate.txt": {
+        "global_cache": false,
+        "version_id": 1040111,
+        "version_string": "1.4.1a1",
+        "hash": "cb65812bb42b655093fd5bf9c6a00848"
     },
     "option_explain.geoblockCacheExpiry.txt": {
         "global_cache": false,

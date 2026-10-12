@@ -12,6 +12,7 @@ namespace XF;
 
 /**
  * @property string|null $geoblockApproved Approved country codes
+ * @property bool|null $geoblockAutoUpdate Automatically update the MaxMind database
  * @property non-negative-int|null $geoblockCacheExpiry Cache expiry
  * @property string|null $geoblockDatabasePath Local Database Path
  * @property string|null $geoblockDenied Denied country codes

@@ -2,6 +2,9 @@
     "geoblockApproved.json": {
         "hash": "2ac285c28555987459dc92d756e587db"
     },
+    "geoblockAutoUpdate.json": {
+        "hash": "bde0e066e5764fc7bf9a40cdf1078b8c"
+    },
     "geoblockCacheExpiry.json": {
         "hash": "ad85355a99466ba7b3673de0394e125e"
     },
