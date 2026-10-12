@@ -18,16 +18,23 @@ What this add-on touches, what breaks quietly, and which checks a machine can se
 
 * `app_setup` — registers the `geoblock` sub-container.
 * `app_admin_setup` — registers the `geoblock.test` factory the ACP diagnostics resolve through.
-* `spam_user_providers` — registers the spam provider, but **only when the add-on is configured**.
-  An unconfigured install adds no provider at all, which is deliberate and is the first thing to
-  check when the country lists appear to do nothing.
+* `spam_user_providers` — registers the spam provider, but **only when the add-on is configured**,
+  which since 1.5.0 means a database is present rather than a license key being set. An
+  unconfigured install adds no provider at all, which is deliberate and is the first thing to check
+  when the country lists appear to do nothing.
+* `hampel_admin_api_redaction` — declares the license key as this add-on's only secret. The event
+  is defined by another add-on, so on a forum without it this listener is never fired and costs
+  nothing; it is not a dependency.
 
 **Other artifacts**
 
 * Admin navigation: two entries under *Checks and Tests*, both gated on the `option` permission.
 * Cron: a weekly database download and a monthly cache prune. Note the cleanup entry and method
   are named "daily" but the rule runs on the last day of the month.
-* Options: nine, all under the `geoblock` group. Schema: one table, `xf_geoblock_cache`.
+* Options: ten, all under the `geoblock` group. Schema: one table, `xf_geoblock_cache`.
+* CLI: `geoblock:config`, `geoblock:validate` and `geoblock:update-database`. XenForo loads every
+  add-on's command classes just to build `cmd.php list`, so one that cannot load takes the whole
+  CLI down on that forum - not only this add-on's commands.
 * No template modifications — the two templates are the add-on's own ACP pages.
 
 ## Fragile points
@@ -55,6 +62,15 @@ What this add-on touches, what breaks quietly, and which checks a machine can se
   membership correctly, and the decider tool takes "in EU" from a checkbox rather than a lookup, so
   between them they look like end-to-end proof while neither executes the line.
 
+* **An external database update fails silently, and only `geoblock:validate` reports it.** With
+  *Automatically update the MaxMind database* off, the weekly task returns without doing anything
+  and without logging - which is correct, because a missing license key is then a configuration
+  somebody chose. What that removes is the alarm. If whatever took the job over stops, the database
+  ages and lookups keep answering confidently with old data; nothing in the ACP judges the build
+  date, and no error is written. `geoblock:validate` warns past 30 days however the database is
+  updated, so **a forum that manages its own updates needs that command on a schedule**, not just
+  the update itself.
+
 * **A phrase body is trusted; its parameters are escaped.** Verified by rendering
   `admin:hampel_geoblock_tools_test` on 2026-09-27. `geoblock_error_configuration_required` and
   `geoblock_test_isocode_explain` both contain markup and it renders live, so `{{ $message.message }}`
@@ -80,12 +96,14 @@ What this add-on touches, what breaks quietly, and which checks a machine can se
 
 ## Automated
 
-`vendor/bin/phpunit` — 74 tests across two suites. Requires `composer install` first; `vendor/`
+`vendor/bin/phpunit` — 95 tests across two suites. Requires `composer install` first; `vendor/`
 is not committed.
 
 The suite boots a real XenForo app with only this add-on loaded, and covers the value object, the
 repository, the spam provider's decision table, the sub-container's fallback chain, the database
-update path, and the cache table against a real connection. `tests/mock/country.mmdb` is a real
+update path, the cache table against a real connection, all three CLI commands through
+`CommandTester`, the secrets declaration against `_output/options/`, and a source scan for an error
+log call that lacks the add-on's prefix. `tests/mock/country.mmdb` is a real
 cut-down MaxMind database, so the lookup tests exercise the genuine reader with no network, and
 `tests/mock/GeoLite2-*.tar.gz` are real archives, so the extractor tests exercise the genuine
 `PharData` path.

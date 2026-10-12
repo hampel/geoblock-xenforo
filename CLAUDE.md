@@ -27,7 +27,16 @@ vendor/bin/phpunit tests/Unit/IpGeoTest.php       # one file
 php ../../../../cmd.php xf-dev:import --addon=Hampel/Geoblock
 php ../../../../cmd.php xf-addon:export Hampel/Geoblock
 php ../../../../cmd.php xf-addon:build-release Hampel/Geoblock
+
+php ../../../../cmd.php geoblock:config             # settings, and never the license key
+php ../../../../cmd.php geoblock:validate           # whether a lookup and a decision would work
+php ../../../../cmd.php geoblock:update-database    # download the database now
 ```
+
+`validate` exits 1 for a failure and 0 for a warning, with `--strict` turning a warning into 2 —
+the shared contract, which is **not** the monitoring-plugin numbering. `xenforo-addon-validate` is
+the authority; `Cli/RendersReport.php` is a copy of `Hampel/Monolog`'s with only the namespace
+changed, so **fix that add-on's and take it again rather than improving this copy**.
 
 `build.json` runs `composer install --no-dev` into the build output, then removes `phpunit.xml`,
 `tests/`, `TESTING.md` and both Claude files before moving every remaining root `*.md` up to the
@@ -94,6 +103,13 @@ as the `geoblock` sub-container in `Listener::appSetup()`. Order matters:
 
 Returning `null` means "we could not decide" and every caller treats that as **allow**.
 
+**`isConfigured()` asks whether there is a database, not whether there is a license key**, and that
+distinction is load-bearing: it gates the spam provider registration, step 5 above, and the ACP
+diagnostics. The key is what *downloads* the database — `updateDatabase()` checks it there — so
+requiring it to look anything up made the add-on inert on any forum holding a database it did not
+download itself. Before 1.5.0 nothing could reach that state; the option to manage updates
+externally creates it. `SubcontainerTest` pins both directions.
+
 **`getIpGeo()` takes a dotted-quad string, never packed binary**, and the pipeline converts at the
 database boundary itself — `Finder\GeoIp::getGeoIp()` and `Entity\GeoIp::verifyIp()` each call
 `XF\Util\Ip::convertIpStringToBinary()` for the `varbinary(16)` column. A caller that converts
@@ -144,6 +160,13 @@ abstracted filesystem. Two things bite:
 - `recurseArchive()` descends one directory level to find the `.mmdb` inside the dated folder
   MaxMind ships.
 
+**`Option\AutoUpdate` gates the weekly task, and turning it off has to stay silent.** With updates
+managed externally there is no license key to find, so `updateDatabase()` would log one as missing
+every week for a configuration somebody chose — `Cron\UpdateDatabase` returns before calling it.
+What replaces that signal is `geoblock:validate`'s age check, which reports however the database is
+updated; without it the option would trade a loud failure for a silent one, which is worse, because
+a stale database answers confidently.
+
 Triggered weekly by `Cron\UpdateDatabase`, and manually from ACP *Tools → Update MaxMind Database*
 (`XF\Admin\Controller\Tools::actionHampelGeoblockUpdateMaxmind`). `Cron\CleanUp` prunes cache rows
 older than `Option\CacheExpiry` days — note the entry and method are named "daily" but
@@ -190,30 +213,46 @@ the real filesystem under a namespaced directory and clean up in `tearDown`.
 column is `varbinary(16)` with conversion in both directions and a mocked finder cannot tell you
 that round trip is wrong.
 
+## Two conventions that are easy to leave stale
+
+**`Listener::adminApiRedaction()` declares `geoblockLicenseKey` as this add-on's only secret.**
+Until an add-on declares, the Admin API withholds every text setting it has as a precaution — which
+here hid the country lists and the database path while protecting the key only because its name
+reads like a credential. Add or rename an option and the declaration goes stale silently;
+`tests/Unit/SecretsDeclarationTest.php` is what catches that. `xenforo-addon-secrets` has the
+procedure. It is **not** a dependency on the Admin API: an event no installed add-on defines is
+never fired.
+
+**Every `\XF::logError()` and `logException()` begins with `Geoblock: `**, so a row is attributable
+without reading its trace. The commands get theirs from `RendersReport::errorLogPrefix()`, abstract
+so a command that forgot it does not load; everywhere else it is written inline and
+`tests/Unit/ErrorLogPrefixTest.php` scans the source for a call that lacks it.
+
 ## Versioning
 
 `addon.json` carries `version_id` and `version_string`, and they must be bumped together. The
 encoding is documented beside `XF::$versionId` in `src/XF.php` — `abbccde`, where `d` is the
 stability (alpha 1, beta 3, RC 5, stable 7, PL 9) and `e` is the level *within* that stability.
-So `1030070` / `"1.3.0"` is stable level 0, and `1040011` / `"1.4.0a1"` is alpha 1 of the next
+So `1040070` / `"1.4.0"` is stable level 0, and `1050011` / `"1.5.0a1"` is alpha 1 of the next
 minor.
 
 **Open the development cycle before the work, not at release time.** A tree still carrying the last
 released version names its build zip over that release: the builder derives the filename from
 `version_string` alone and renames over the destination with no prompt and no backup. From a
-released `1.3.0` the cycle opens at the smallest bump, `1030111` / `"1.3.1a1"`. This cycle was
-then raised to a minor, so from `1040011` the moves are:
+released `1.4.0` the cycle opens at the smallest bump, `1040111` / `"1.4.1a1"`. This cycle was
+then raised to a minor once its scope was clear, so from `1050011` the moves are:
 
-    next alpha     1040012 / "1.4.0a2"
-    release it     1040070 / "1.4.0"
+    next alpha     1050012 / "1.5.0a2"
+    release it     1050070 / "1.5.0"
 
 **Take the smallest bump even when the work looks bigger.** Raising later is free; lowering is not
 available at all, because `AddOn::canUpgrade()` requires the json `version_id` to be strictly
 greater than the installed one, and `AddOnController::actionUpgrade()` offers users no override.
-This cycle is the worked example in both directions: it opened at `1030111`, was raised to
-`1040011` once the scope was clear, and **can no longer be released as `1.3.1`** — `1030170` is
-below the installed `1040011`, so the ACP would refuse it. That is the asymmetry, not a mistake:
-the raise cost nothing and the reverse is simply unavailable.
+Both of the last two cycles are the worked example, in both directions: each opened at the next
+patch alpha, each was raised to a minor once its scope was clear, and neither could then be
+released as that patch — `1040170` is below the installed `1050011`, so the ACP would refuse it.
+That is the asymmetry rather than a mistake: the raise cost nothing and the reverse is simply
+unavailable.
 
 Nothing enforces the id/string pairing: `version_id` drives upgrade ordering and `version_string`
 only shows in the ACP and names the zip, so a mismatch survives unnoticed. `1030110` paired with
