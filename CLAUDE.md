@@ -233,26 +233,27 @@ so a command that forgot it does not load; everywhere else it is written inline 
 `addon.json` carries `version_id` and `version_string`, and they must be bumped together. The
 encoding is documented beside `XF::$versionId` in `src/XF.php` — `abbccde`, where `d` is the
 stability (alpha 1, beta 3, RC 5, stable 7, PL 9) and `e` is the level *within* that stability.
-So `1040070` / `"1.4.0"` is stable level 0, and `1050011` / `"1.5.0a1"` is alpha 1 of the next
-minor.
+So `1050070` / `"1.5.0"` is stable level 0, and `1050111` / `"1.5.1a1"` is alpha 1 of the next
+patch.
 
 **Open the development cycle before the work, not at release time.** A tree still carrying the last
 released version names its build zip over that release: the builder derives the filename from
 `version_string` alone and renames over the destination with no prompt and no backup. From a
-released `1.4.0` the cycle opens at the smallest bump, `1040111` / `"1.4.1a1"`. This cycle was
-then raised to a minor once its scope was clear, so from `1050011` the moves are:
+released `1.5.0` the cycle opens at the smallest bump, and the moves from there are:
 
-    next alpha     1050012 / "1.5.0a2"
-    release it     1050070 / "1.5.0"
+    open the cycle 1050111 / "1.5.1a1"
+    next alpha     1050112 / "1.5.1a2"
+    raise to minor 1060011 / "1.6.0a1"
+    release it     1050170 / "1.5.1"   or   1060070 / "1.6.0"
 
 **Take the smallest bump even when the work looks bigger.** Raising later is free; lowering is not
 available at all, because `AddOn::canUpgrade()` requires the json `version_id` to be strictly
 greater than the installed one, and `AddOnController::actionUpgrade()` offers users no override.
-Both of the last two cycles are the worked example, in both directions: each opened at the next
-patch alpha, each was raised to a minor once its scope was clear, and neither could then be
-released as that patch — `1040170` is below the installed `1050011`, so the ACP would refuse it.
-That is the asymmetry rather than a mistake: the raise cost nothing and the reverse is simply
-unavailable.
+The last three cycles are the worked example, in both directions: each opened at the next patch
+alpha, each was raised to a minor once its scope was clear, and none could then be released as
+that patch — once the tree carried `1050011`, the patch release `1040170` was below it and the ACP
+would have refused it. That is the asymmetry rather than a mistake: the raise cost nothing and the
+reverse is simply unavailable.
 
 Nothing enforces the id/string pairing: `version_id` drives upgrade ordering and `version_string`
 only shows in the ACP and names the zip, so a mismatch survives unnoticed. `1030110` paired with
