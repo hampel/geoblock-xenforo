@@ -136,11 +136,11 @@ class Maxmind extends AbstractSubContainer
 		}
 		catch (GeoIp2Exception $e)
 		{
-			\XF::logException($e, false, "Error retrieving data from Maxmind GeoLite2 database for IP [$ip]: ");
+			\XF::logException($e, false, "Geoblock: Error retrieving data from Maxmind GeoLite2 database for IP [$ip]: ");
 		}
 		catch (InvalidDatabaseException $e)
 		{
-			\XF::logException($e, false, "Invalid database error retrieving data from Maxmind GeoLite2 database for IP [$ip]: ");
+			\XF::logException($e, false, "Geoblock: Invalid database error retrieving data from Maxmind GeoLite2 database for IP [$ip]: ");
 		}
 	}
 
@@ -154,7 +154,7 @@ class Maxmind extends AbstractSubContainer
 
 	protected function logError(\Exception $e, $ip = '')
 	{
-		\XF::logError(\XF::phrase('geoblock_error', ['ip' => $ip, 'code' => $e->getCode(), 'message' => $e->getMessage()]));
+		\XF::logError('Geoblock: ' . \XF::phrase('geoblock_error', ['ip' => $ip, 'code' => $e->getCode(), 'message' => $e->getMessage()]));
 	}
 
 	public function updateDatabase()
@@ -162,14 +162,14 @@ class Maxmind extends AbstractSubContainer
 		$licenseKey = LicenseKey::get();
 		if (empty($licenseKey))
 		{
-			\XF::logError("Maxmind license key not configured");
+			\XF::logError("Geoblock: Maxmind license key not configured");
 			return false;
 		}
 
 		$dbPath = DatabasePath::getAbstractedPath();
 		if (empty($dbPath))
 		{
-			\XF::logError("Maxmind database path not configured");
+			\XF::logError("Geoblock: Maxmind database path not configured");
 			return false;
 		}
 

@@ -80,7 +80,7 @@ class DatabaseExtractor
 	{
 		if(!$this->app->http()->reader()->getUntrusted($source, [], $dest, [], $error))
 		{
-			\XF::logError($error);
+			\XF::logError('Geoblock: ' . $error);
 			return false;
 		}
 
@@ -104,7 +104,7 @@ class DatabaseExtractor
 		}
 		catch (\UnexpectedValueException $e)
 		{
-			\XF::logException($e, false, "Could not read PharData [{$source}]: ");
+			\XF::logException($e, false, "Geoblock: Could not read PharData [{$source}]: ");
 			return false;
 		}
 
@@ -114,7 +114,7 @@ class DatabaseExtractor
 		}
 		catch (\PharException $e)
 		{
-			\XF::logException($e, false, "Could not extract PharData from [{$source}] to [{$dest}]: ");
+			\XF::logException($e, false, "Geoblock: Could not extract PharData from [{$source}] to [{$dest}]: ");
 			return false;
 		}
 
