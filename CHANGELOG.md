@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 1.5.0 (2026-10-12)
+
+* new option *Automatically update the MaxMind database*, on by default. Turn it off to keep the
+  database current by your own means - an external cron task running the new
+  `geoblock:update-database` command, or any other mechanism that puts a current database file in
+  place. With it off, no license key is needed and none is reported as missing
+* bugfix: a country lookup required a license key as well as a database. The key is what
+  *downloads* the database, so a forum holding one the addon had not downloaded itself registered
+  no spam provider, never reached a lookup, and reported nothing about either. No earlier release
+  could reach that state - the new option is what creates it
+* three new command line tools: `geoblock:config` shows what this forum is configured to block,
+  `geoblock:validate` checks that it can actually do it, and `geoblock:update-database` downloads
+  the database now. **`geoblock:validate` warns when the database is more than 30 days old,
+  however it is updated** - which is what catches an external update that has quietly stopped
+* every row this addon writes to the server error log now begins with `Geoblock: `
+* the license key is declared as this addon's only secret, so a tool reading the forum's
+  configuration over an API can report the other settings without exposing it
+
 ## 1.4.0 (2026-09-27)
 
 * bugfix: EU registration blocking has never worked. The visitor's IP was converted to binary
