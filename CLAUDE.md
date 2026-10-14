@@ -259,7 +259,7 @@ so a command that forgot it does not load; everywhere else it is written inline 
 `addon.json` carries `version_id` and `version_string`, and they must be bumped together. The
 encoding is documented beside `XF::$versionId` in `src/XF.php` — `abbccde`, where `d` is the
 stability (alpha 1, beta 3, RC 5, stable 7, PL 9) and `e` is the level *within* that stability.
-So `1050070` / `"1.5.0"` is stable level 0, and `1050111` / `"1.5.1a1"` is alpha 1 of the next
+So `1060070` / `"1.6.0"` is stable level 0, and `1060111` / `"1.6.1a1"` is alpha 1 of the next
 patch.
 
 **Open the development cycle before the work, not at release time.** A tree still carrying the last
@@ -267,10 +267,10 @@ released version names its build zip over that release: the builder derives the 
 `version_string` alone and renames over the destination with no prompt and no backup. From a
 released `1.5.0` the cycle opens at the smallest bump, and the moves from there are:
 
-    open the cycle 1050111 / "1.5.1a1"
-    next alpha     1050112 / "1.5.1a2"
-    raise to minor 1060011 / "1.6.0a1"
-    release it     1050170 / "1.5.1"   or   1060070 / "1.6.0"
+    open the cycle 1060111 / "1.6.1a1"
+    next alpha     1060112 / "1.6.1a2"
+    raise to minor 1070011 / "1.7.0a1"
+    release it     1060170 / "1.6.1"   or   1070070 / "1.7.0"
 
 **Take the smallest bump even when the work looks bigger.** Raising later is free; lowering is not
 available at all, because `AddOn::canUpgrade()` requires the json `version_id` to be strictly
