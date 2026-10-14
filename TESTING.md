@@ -214,6 +214,40 @@ EOF
   for p in l['packages']: print(f\"  {p['name']:35} {p.get('require',{}).get('php','-')}\")"
   ```
 
+* **The add-on's own source parses at the declared floor.** The check above reads what the
+  dependencies ask for, which is the wrong direction: the floor here is set by this add-on's
+  syntax, not by its tree. Lint every shipped file with a PHP that *is* the floor — a container is
+  the usual way, since a development box rarely has one that old installed:
+
+  **Against an unzipped release**, which is the form that counts — it is what a forum receives, and
+  its `vendor/` is the `--no-dev` tree that actually ships:
+
+  ```bash
+  docker run --rm -v "$z":/a:ro php:7.4-cli \
+    sh -c 'cd /a && n=0; for f in $(find . -name "*.php"); do php -l "$f" >/dev/null || { echo "$f"; n=$((n+1)); }; done; echo "failures: $n"'
+  ```
+
+  **Against the working copy**, `vendor/` and `tests/` have to be pruned or the output is useless:
+  the dev tree is solved against the 8.3 platform pin, so PHPUnit and the test framework are
+  hundreds of parse errors at the floor, and none of them ships.
+
+  ```bash
+  docker run --rm -v "$PWD":/a:ro php:7.4-cli \
+    sh -c 'cd /a && n=0; for f in $(find . \( -path ./vendor -o -path ./tests \) -prune -o -name "*.php" -print); do php -l "$f" >/dev/null || { echo "$f"; n=$((n+1)); }; done; echo "failures: $n"'
+  ```
+
+  Both forms were run at 7.4 when this was written: 0 failures each. The release form at 7.2 and
+  at 7.3 reported exactly one file, which is how the defect below was pinned down.
+
+  **Below the floor the symptom is not a broken add-on but a dead `cmd.php` for the whole forum**,
+  because XenForo calls `class_exists()` on every add-on's command classes before any try/catch
+  exists — so one unparseable file takes out every command on the forum, including XenForo's own,
+  and writes nothing to the server error log. `CLAUDE.md` has the mechanism.
+
+  This is here because the three declarations were checked against *each other* and recorded as
+  clean, while the report trait had required 7.4 since the day it was copied in. 1.5.0 shipped and
+  was published that way; 1.5.1 raised the floor. Agreement between declarations is not evidence.
+
 * Build the release and unzip it: `vendor/` present, and `tests/`, `phpunit.xml`, `TESTING.md`
   and the Claude files absent. Read the listing with `unzip -Z1`, not `unzip -l | awk`, which
   truncates any path containing a space. Ignore `vendor/**/tests/` hits — upstream packages ship

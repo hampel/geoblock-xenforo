@@ -45,20 +45,38 @@ already been renamed and `rm -f` reports nothing.
 
 ## The PHP floor, and why `composer.json` looks contradictory
 
-The declared floor is **7.2**, in three places that must agree: `addon.json` `require.php`,
-`composer.json` `require.php`, and the README. It is set by the runtime dependencies —
-`geoip2/geoip2` and `maxmind-db/reader` both want `>=7.2` — not by any syntax in this add-on.
+The declared floor is **7.4**, in three places that must agree: `addon.json` `require.php`,
+`composer.json` `require.php`, and the README. **It is set by this add-on's own syntax, not by its
+dependencies** — `Cli/RendersReport.php` has four typed properties, which arrived in 7.4. The
+runtime packages only want `>=7.2`, so reading the dependency tree gives the wrong answer.
+
+**That the three declarations agree with each other proves nothing.** It was checked and recorded
+as clean while all three said 7.2 and the trait had needed 7.4 since the day it was copied in: the
+check compared the declarations and never compared any of them to the code. **The check that
+answers it is `php -l` over the shipped tree at the declared floor**, which `TESTING.md` carries.
+
+**Below the floor this fails as a dead `cmd.php` for the whole forum, not as a broken add-on.**
+`Runner::registerCommands()` walks every add-on's `Cli/Command` directory and calls
+`class_exists()` on what it finds — before the first try/catch and before the app exists. All three
+commands `use RendersReport`, so an unparseable trait throws a ParseError out of the autoloader
+that nothing catches, taking out every add-on's commands and XenForo's own, with no server error
+log row because there is no app yet to write one. The forum keeps serving pages, so nothing points
+here. Same ordering in 2.2's runner and 2.3's.
+
+So **raising the floor is the fix, never de-typing the copy.** The trait is `Hampel/Monolog`'s with
+the namespace changed, that add-on declares 7.4 for the same reason, and a local divergence here
+would be lost the next time the copy is taken again.
 
 `config.platform.php` is **8.3**, and that is deliberately *not* the floor. Composer applies the
 platform pin to dev dependencies as well as runtime ones, and the test toolchain
-(`hampel/xenforo-test-framework ^4.0`, PHPUnit 12) requires 8.3. Pinning to 7.2 does not merely
-downgrade the tooling — the solve fails outright.
+(`hampel/xenforo-test-framework ^5.0`, PHPUnit 12) requires 8.3. Pinning to the floor does not
+merely downgrade the tooling — the solve fails outright.
 
 The cost of that is real: the solve can select **runtime** packages above the declared floor, and
 they ship, and the gap the pin opens is now more than a full major version wide.
 `maxmind/web-service-common` is pinned to `^0.9.0` for exactly this reason — 0.11 requires PHP
 8.1, arrives transitively through `geoip2/geoip2`, and would land in the release zip of an add-on
-claiming 7.2.
+claiming 7.4. Raising the floor from 7.2 to 7.4 did not release that pin and does not.
 
 **`league/flysystem-memory` is capped at `^1.0` by XenForo, not by choice, and the lock does not
 describe what runs.** XF 2.3.12 ships `league/flysystem` 1.0.70 in `src/vendor/`, and core's
