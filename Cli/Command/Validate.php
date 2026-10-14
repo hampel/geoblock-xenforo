@@ -22,8 +22,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  * be taken on the answer.
  *
  * It writes nothing and sends nothing. The lookup goes to the reader directly rather than through
- * getIpGeo(), which would write the result into both caches - so there is no --unattended flag
- * here, because there is nothing for it to skip.
+ * getIpGeo(), which would write the result into both caches.
+ *
+ * It still accepts --unattended, which does nothing here. Every validate takes the flag so that
+ * one command line - validate --strict --unattended - runs against every add-on; a command without
+ * it would fail that line on an unknown option rather than run its checks.
  *
  * The age check is the one that earns this command. A database that stops being updated keeps
  * answering, with last year's data, and nothing else reports it - not the ACP, which shows the
@@ -45,7 +48,9 @@ class Validate extends Command
 			->setName('geoblock:validate')
 			->setDescription('Check that this forum can look up a country and act on it')
 			->addOption('strict', null, InputOption::VALUE_NONE,
-				'Exit 2 when there are warnings but no failures');
+				'Exit 2 when there are warnings but no failures')
+			->addOption('unattended', null, InputOption::VALUE_NONE,
+				'Accepted for consistency with every other validate command. This one sends nothing, so it skips nothing');
 	}
 
 	protected function errorLogPrefix(): string

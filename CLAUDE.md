@@ -38,6 +38,14 @@ the shared contract, which is **not** the monitoring-plugin numbering. `xenforo-
 the authority; `Cli/RendersReport.php` is a copy of `Hampel/Monolog`'s with only the namespace
 changed, so **fix that add-on's and take it again rather than improving this copy**.
 
+**`validate` also accepts `--unattended`, and it does nothing here.** This command sends nothing —
+the proof lookup goes to the reader directly rather than through `getIpGeo()`, which would write
+to both caches — so there is nothing for the flag to skip, and it must not change a single row of
+the report. It is declared because `validate --strict --unattended` is one command line a monitor
+runs against every add-on, and a command missing the option fails that line on an unknown option
+instead of running its checks. Do not remove it on the grounds that it is unused; two tests pin
+both the acceptance and the no-op.
+
 `build.json` runs `composer install --no-dev` into the build output, then removes `phpunit.xml`,
 `tests/`, `TESTING.md` and both Claude files before moving every remaining root `*.md` up to the
 zip root. **The `rm` line has to stay before the `mv`** — after it, the files it names have

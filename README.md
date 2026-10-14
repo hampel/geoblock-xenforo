@@ -60,4 +60,7 @@ php cmd.php geoblock:update-database    # download the current database now
 A warning exits 0 without the flag, so `geoblock:validate && next-step` carries on past one. **This
 is not the monitoring-plugin numbering**, where 1 is a warning and 2 is critical: here 1 always
 means something failed, with the flag and without it.
+
+`--unattended` is accepted and does nothing: this command sends nothing, so it has nothing to
+skip. It is there so that one command line works against every addon that has a `validate`.
  

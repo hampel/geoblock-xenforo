@@ -120,6 +120,37 @@ class CommandsTest extends TestCase
 		$this->assertSame(2, $tester->getStatusCode());
 	}
 
+	/**
+	 * Every validate accepts --unattended, including this one, which sends nothing and therefore
+	 * skips nothing. The flag exists so that `validate --strict --unattended` runs against every
+	 * add-on; without the option declared, CommandTester and a real monitor both fail on an
+	 * unknown option instead of running the checks.
+	 */
+	public function test_validate_accepts_unattended_and_behaves_identically()
+	{
+		$this->mockMmdb();
+		$this->setOptions(['geoblockDenied' => 'CN', 'geoblockLicenseKey' => 'key_foo']);
+		$this->setTestTime(1595663825 + 86400);
+
+		$without = $this->runCommand(new Validate());
+		$with = $this->runCommand(new Validate(), ['--unattended' => true]);
+
+		$this->assertSame($without->getStatusCode(), $with->getStatusCode());
+		$this->assertSame($without->getDisplay(), $with->getDisplay(),
+			'the flag has nothing to skip here, so it must not change a single row');
+	}
+
+	public function test_the_monitor_command_line_runs_both_flags_together()
+	{
+		$this->mockMmdb();
+		$this->setOptions(['geoblockDenied' => 'CN', 'geoblockLicenseKey' => 'key_foo']);
+
+		// stale fixture, so --strict is the thing being read: the pair must stay orthogonal
+		$tester = $this->runCommand(new Validate(), ['--strict' => true, '--unattended' => true]);
+
+		$this->assertSame(2, $tester->getStatusCode());
+	}
+
 	public function test_validate_passes_with_a_fresh_database_and_blocking_configured()
 	{
 		$this->mockMmdb();
