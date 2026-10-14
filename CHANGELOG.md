@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 1.6.0 (2026-10-14)
+
+* **now requires PHP 7.4+.** The declaration said 7.2 and was wrong: `Cli/RendersReport.php`, which
+  all three command line tools use, has typed properties, and those arrived in PHP 7.4. On PHP 7.2
+  or 7.3 that file cannot be parsed, and because XenForo loads every addon's command classes merely
+  to list them, `php cmd.php` stopped working for the **whole forum** - every addon's commands and
+  XenForo's own - with nothing written to the server error log. Pages were unaffected. If you are on
+  PHP 7.2 or 7.3, this release will refuse to install, which is the point: 1.5.0 should have
+  refused too
+* `geoblock:validate` now accepts `--unattended`. It does nothing here, because this command sends
+  nothing and so has nothing to skip. It is accepted so that one command line works against every
+  addon that offers a `validate`
+* the Maxmind link on the addon's own admin page pointed at a page that has moved
+
 ## 1.5.0 (2026-10-12)
 
 * new option *Automatically update the MaxMind database*, on by default. Turn it off to keep the
