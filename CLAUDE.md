@@ -58,6 +58,12 @@ The declared floor is **7.4**, in three places that must agree: `addon.json` `re
 dependencies** — `Cli/RendersReport.php` has four typed properties, which arrived in 7.4. The
 runtime packages only want `>=7.2`, so reading the dependency tree gives the wrong answer.
 
+**The XF floor implies nothing about the PHP floor, in either direction.** XenForo 2.3.12 itself
+requires only PHP 7.2 — `Install/Helper.php:72` and `:274`, and `_upgrader/requirements.json` — so
+raising `require.XF` would not have raised this, and an add-on on a 2.3-only floor that takes the
+trait is exposed by exactly the same mechanism. The two requirements are independent and both have
+to be declared.
+
 **That the three declarations agree with each other proves nothing.** It was checked and recorded
 as clean while all three said 7.2 and the trait had needed 7.4 since the day it was copied in: the
 check compared the declarations and never compared any of them to the code. **The check that
