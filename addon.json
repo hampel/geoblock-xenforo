@@ -11,7 +11,7 @@
     "extra_urls": {
         "Addon": "https://xenforo.com/community/resources/geoblock-registration.7516/",
         "Git Repository": "https://github.com/hampel/geoblock-xenforo",
-        "Maxmind": "https://dev.maxmind.com/geoip/geoip2/geolite2/"
+        "Maxmind": "https://dev.maxmind.com/geoip/geolite2-free-geolocation-data/"
     },
     "require": {
         "php": [
