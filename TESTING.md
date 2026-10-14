@@ -244,6 +244,22 @@ EOF
   exists — so one unparseable file takes out every command on the forum, including XenForo's own,
   and writes nothing to the server error log. `CLAUDE.md` has the mechanism.
 
+  **Measured on a real forum rather than reasoned about** — XenForo 2.2.19 Patch 2 on PHP 7.2.34,
+  development off, installing the published 1.5.0 by zip. It is worse than the mechanism alone
+  predicts, and the extra part is what a forum owner would actually report:
+
+  | | |
+  |---|---|
+  | the add-on install | exits 0 and leaves `xf_addon.is_processing = 1` — it never completes |
+  | every `cmd.php` command, this add-on's and XenForo's | *"The site is currently being upgraded. Please check back later."* |
+  | `class_exists()` on a command class | dies with the parse error, so `registerCommands()` cannot finish |
+  | `index.php` and `admin.php` | 200, both — the web app boots and the forum looks healthy |
+  | `xf_error_log` | 0 rows |
+
+  So recovery is through the ACP, because the CLI is the thing that is gone. From 1.6.0 the same
+  install is refused instead: *"Geoblock Registrations requires PHP 7.4+."*, exit 1, nothing
+  written and no add-on row created.
+
   This is here because the three declarations were checked against *each other* and recorded as
   clean, while the report trait had required 7.4 since the day it was copied in. 1.5.0 shipped and
   was published that way; 1.5.1 raised the floor. Agreement between declarations is not evidence.
